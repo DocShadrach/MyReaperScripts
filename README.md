@@ -34,4 +34,13 @@ Key Features:
 
 This script generates two custom actions to control the oversampling of an FX on the Master Track based on user input. One script enables oversampling to a specified value, while the other disables it (setting it to 1x). It simplifies the management of oversampling for plugins on the Master Track, with a user-friendly approach to handle plugins that appear multiple times in the chain. It's similar to the previous one but acts on the Master Track instead of acting on a specific track.
 
+### Toggle_Bypass_Container_Creator.lua
+
+This script allows the user to create a custom Lua script that toggles the bypass state of an FX container on a specified track. Based on user input, it generates a new script that can be used to enable or disable the selected container.
+
+Key Features:
+
+- The script prompts the user to specify the name of the track and the position of the container within the FX chain.
+- The generated script searches for the specified container on the selected track, ensuring it finds the correct one before toggling its bypass state. Once the container is located, the script will toggle the bypass state, enabling or disabling the FX container.
+- The generated script is automatically saved in REAPER’s script directory and registered in the Action List for easy future access.
 
