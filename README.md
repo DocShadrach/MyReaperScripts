@@ -44,3 +44,13 @@ Key Features:
 - The generated script searches for the specified container on the selected track, ensuring it finds the correct one before toggling its bypass state. Once the container is located, the script will toggle the bypass state, enabling or disabling the FX container.
 - The generated script is automatically saved in REAPER’s script directory and registered in the Action List for easy future access.
 
+### Toggle_Bypass_FX_Creator.lua
+
+This script allows the user to create a custom Lua script that toggles the bypass state of a specific FX plugin on a chosen track. It uses user input to specify the track name, FX name, and FX position within the chain, then generates a new script that can enable or disable the selected FX.
+
+Key Features:
+
+- The script prompts the user to input the track name, the FX name, and the FX position in the FX chain. If the FX is unique on the track, the position can be set to 0.
+- The generated script searches for the specified FX on the selected track, ensuring it finds the correct instance. Once located, the script toggles the bypass state of the FX.
+- The generated script is automatically saved in REAPER's script directory and added to the Action List for future use.
+
