@@ -16,5 +16,5 @@ This script allows the user to create two custom scripts, one for cycling forwar
 
 Key Features:
 - User input for track name, FX container, and whether to apply the action to all plugins or just a specified range.
-- #Generates two new scripts#: one that cycles forward and another that cycles backward through the plugins, enabling one and disabling the rest.
+- Generates two new scripts: one that cycles forward and another that cycles backward through the plugins, enabling one and disabling the rest.
 - Both generated scripts are automatically added to REAPER's action list for future use.
