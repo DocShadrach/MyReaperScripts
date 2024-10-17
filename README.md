@@ -3,19 +3,18 @@
 
 ### Cycle_Select-Bypass_Plugins_Creator.lua
 
-This script allows you to cycle through FX plugins on a specified track or within a container, enabling the next FX and disabling the current active one. The user can choose whether to apply the action to all plugins or to a specific range of plugins.
+This script allows the user to create a custom script that cycles through FX plugins on a specified track or within a container. Based on user input, it generates a new script that can either apply the action to all plugins or to a specific range of plugins, cycling through them by enabling the next FX and disabling the current active one.
 
 Key Features:
-- User input for track name, FX container, and whether to apply the action to all or specific plugins.
-- Cycles forward through the plugins, enabling one and disabling the rest.
-- Only generates one script for forward cycling.
+- User input for track name, FX container, and whether to apply the action to all plugins or just a specified range.
+- Generates a new script based on these inputs that cycles forward through the plugins, enabling one and disabling the rest.
+- The generated script is automatically added to REAPER's action list for future use.
 
 ### Cycle_Select-Bypass_Plugins_Creator_F&B.lua
 
-This script is very similar to the first, with the key difference being that it creates two scripts: one for cycling forward through the FX plugins and another for cycling backward. This gives users the flexibility to move both forward and backward through the plugin list.
+This script allows the user to create two custom scripts, one for cycling forward and another for cycling backward through FX plugins on a specified track or within a container. It is very similar to the first script, but instead of generating just one, it creates two separate scripts based on user input. These scripts can apply the action to all plugins or to a specific range, enabling one plugin at a time while disabling the rest.
 
 Key Features:
-- Same user input process and functionality as the first script.
-- Generates two scripts: one for forward cycling and one for backward cycling.
-- Both scripts are automatically added to REAPER’s action list.
-- So yes, the main distinction is that the second script creates both forward and backward cycling scripts, while the first script only creates one for forward cycling.
+- User input for track name, FX container, and whether to apply the action to all plugins or just a specified range.
+- #Generates two new scripts#: one that cycles forward and another that cycles backward through the plugins, enabling one and disabling the rest.
+- Both generated scripts are automatically added to REAPER's action list for future use.
