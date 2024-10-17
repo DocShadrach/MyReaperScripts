@@ -1,4 +1,4 @@
-# DocShadrach's Reaper Scripts
+# Detailed description:
 
 ### Cycle_Select-Bypass_Plugins_Creator.lua
 This script allows the user to create a custom script that cycles through FX plugins on a specified track or within a container. Based on user input, it generates a new script that applies the action to all plugins or just a specified range, cycling through them by enabling the next FX and disabling the currently active one.
