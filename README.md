@@ -30,3 +30,8 @@ Key Features:
 - Generates two new scripts: one that enables the specified level of oversampling for the selected FX, and another that disables it (sets it to 1x).
 - Both generated scripts are automatically added to REAPER's action list for future use.
 
+### Enable-Disable_Oversampling_FX_MasterTrack_Creator.lua
+
+This script generates two custom actions to control the oversampling of an FX on the Master Track based on user input. One script enables oversampling to a specified value, while the other disables it (setting it to 1x). It simplifies the management of oversampling for plugins on the Master Track, with a user-friendly approach to handle plugins that appear multiple times in the chain. It's similar to the previous one but acts on the Master Track instead of acting on a specific track.
+
+
