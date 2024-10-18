@@ -1,5 +1,14 @@
 # Detailed description:
 
+### Cycle_FXPresets_Creator_F&B.lua
+This script allows the user to create two custom scripts for cycling through FX presets on a specified track in REAPER. Based on user input for the track and FX names, it generates scripts that allow the user to navigate through the presets, moving forward or backward through the available options.
+
+Key Features:
+
+- User input for the track name and FX name, ensuring that the correct track and effect are targeted for preset navigation.
+- Generates two distinct scripts: one for advancing to the next preset and another for reverting to the previous preset, each accommodating the specified track and FX.
+- The generated scripts are automatically saved and registered in REAPER's Action List, allowing easy access for future use.
+
 ### Cycle_Select-Bypass_Plugins_Creator.lua
 This script allows the user to create a custom script that cycles through FX plugins on a specified track or within a container. Based on user input, it generates a new script that applies the action to all plugins or just a specified range, cycling through them by enabling the next FX and disabling the currently active one.
 
