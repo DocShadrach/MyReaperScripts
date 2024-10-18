@@ -71,5 +71,5 @@ Key Features:
 - The generated script searches for the specified FX on the selected track, ensuring it finds the correct instance. Once located, it toggles the bypass state of the FX.
 - The generated script is automatically saved in REAPER's script directory and added to the Action List for future use.
 
-  
+## DOWNLOAD ALL: https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FDocShadrach%2FMyReaperScripts%2Ftree%2Fmain%2FScripts%2520Creators
 
