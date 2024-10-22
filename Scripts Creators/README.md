@@ -71,5 +71,28 @@ Key Features:
 - The generated script searches for the specified FX on the selected track, ensuring it finds the correct instance. Once located, it toggles the bypass state of the FX.
 - The generated script is automatically saved in REAPER's script directory and added to the Action List for future use.
 
+### Toggle_Mute_Sends_Creator.lua
+
+This script allows the user to create a custom Lua script that toggles the mute status of the sends on a specified track in REAPER. Based on user input, the generated script can mute or unmute either all sends or a specific set of sends by their index on a given track.
+
+Key Features:
+
+- User input for specifying the track name and whether to mute all sends or only specific ones.
+- If the track name is left blank, the script will operate on the currently selected track.
+- Allows specifying which send indices to mute/unmute if not applying to all sends.
+- The generated script is automatically saved and added to REAPER's Action List for future access.
+
+### Toggle_Mute_Sends_Specific-Receive-Names_Creator.lua
+
+This script allows the user to create a custom Lua script that toggles the mute status of sends based on the names of the receiving tracks. It provides control over which sends to mute or unmute depending on the target receiving track names.
+
+Key Features:
+
+- User input for specifying the track name, the number of sends, and the names of the receiving tracks.
+- If the track name is left blank, the script will operate on the currently selected track.
+- Mutes or unmutes only the sends directed to specified receiving track names.
+- The generated script is automatically saved and added to REAPER's Action List for future access.
+
+
 #### DOWNLOAD ALL: https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FDocShadrach%2FMyReaperScripts%2Ftree%2Fmain%2FScripts%2520Creators
 
