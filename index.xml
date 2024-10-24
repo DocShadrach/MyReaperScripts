@@ -24,4 +24,16 @@
       </version>
     </reapack>
   </category>
+      <category name="Creators">
+    <reapack name="DocShadrach_Selecting plugins one by one in loop [Creator].lua" type="script" desc="DocShadrach_Selecting plugins one by one in loop [Creator]">
+      <metadata>
+        <description></description>
+        <link rel="donation"></link>
+      </metadata>
+      <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:00:00Z">
+        <changelog><![CDATA[Initial release]]></changelog>
+        <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Selecting%20plugins%20one%20by%20one%20in%20loop%20%5BCreator%5D.lua</source>
+      </version>
+    </reapack>
+  </category>
 </index>
