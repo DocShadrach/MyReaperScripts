@@ -12,7 +12,6 @@
       </version>
     </reapack>
   </category>
-
   <category name="Creators">
     <reapack name="DocShadrach_Selecting plugins one by one in loop [Creator] (F&B).lua" type="script" desc="DocShadrach_Selecting plugins one by one in loop [Creator] (F&B)">
       <metadata>
@@ -24,7 +23,6 @@
       </version>
     </reapack>
   </category>
-
   <category name="Creators">
     <reapack name="DocShadrach_Selecting plugins one by one in loop [Creator].lua" type="script" desc="DocShadrach_Selecting plugins one by one in loop [Creator]">
       <metadata>
@@ -36,7 +34,6 @@
       </version>
     </reapack>
   </category>
-
   <category name="Creators">
     <reapack name="DocShadrach_Enable-Disable Oversampling FX [Creator].lua" type="script" desc="DocShadrach_Enable-Disable Oversampling FX [Creator]">
       <metadata>
@@ -48,7 +45,6 @@
       </version>
     </reapack>
   </category>
-
   <category name="Creators">
     <reapack name="DocShadrach_Enable-Disable Oversampling FX in MasterTrack [Creator].lua" type="script" desc="DocShadrach_Enable-Disable Oversampling FX in MasterTrack [Creator]">
       <metadata>
@@ -60,7 +56,6 @@
       </version>
     </reapack>
   </category>
-
   <category name="Creators">
     <reapack name="DocShadrach_Toggle bypass Container [Creator].lua" type="script" desc="DocShadrach_Toggle bypass Container [Creator]">
       <metadata>
@@ -72,7 +67,6 @@
       </version>
     </reapack>
   </category>
-
   <category name="Creators">
     <reapack name="DocShadrach_Toggle bypass FX [Creator].lua" type="script" desc="DocShadrach_Toggle bypass FX [Creator]">
       <metadata>
@@ -84,7 +78,6 @@
       </version>
     </reapack>
   </category>
-
   <category name="Creators">
     <reapack name="DocShadrach_Toggle mute Sends by index [Creator].lua" type="script" desc="DocShadrach_Toggle mute Sends by index [Creator]">
       <metadata>
@@ -96,7 +89,6 @@
       </version>
     </reapack>
   </category>
-
   <category name="Creators">
     <reapack name="DocShadrach_Toggle mute Sends with Specific-Receive-Names [Creator].lua" type="script" desc="DocShadrach_Toggle mute Sends with Specific-Receive-Names [Creator]">
       <metadata>
@@ -108,5 +100,4 @@
       </version>
     </reapack>
   </category>
-
 </index>
