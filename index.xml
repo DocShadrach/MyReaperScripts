@@ -3,55 +3,55 @@
 
  <category name="Creators">
     <reapack name="DocShadrach_Selecting presets in loop [Creator] (F&B).lua" type="script" desc="DocShadrach_Selecting presets in loop [Creator] (F&B)">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:01:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:01:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Selecting%20presets%20in%20loop%20%5BCreator%5D%20(F%26B).lua</source>
     </version>
     </reapack>
 
     <reapack name="DocShadrach_Selecting plugins one by one in loop [Creator] (F&B).lua" type="script" desc="DocShadrach_Selecting plugins one by one in loop [Creator] (F&B)">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:02:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:02:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Selecting%20plugins%20one%20by%20one%20in%20loop%20%5BCreator%5D%20(F%26B).lua</source>
     </version>
     </reapack>
 
     <reapack name="DocShadrach_Selecting plugins one by one in loop [Creator].lua" type="script" desc="DocShadrach_Selecting plugins one by one in loop [Creator]">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:03:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:03:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Selecting%20plugins%20one%20by%20one%20in%20loop%20%5BCreator%5D.lua</source>
     </version>
     </reapack>
 
     <reapack name="DocShadrach_Enable-Disable Oversampling FX [Creator].lua" type="script" desc="DocShadrach_Enable-Disable Oversampling FX [Creator]">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:04:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:04:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Enable-Disable%20Oversampling%20FX%20%5BCreator%5D.lua</source>
     </version>
     </reapack>
 
     <reapack name="DocShadrach_Enable-Disable Oversampling FX in MasterTrack [Creator].lua" type="script" desc="DocShadrach_Enable-Disable Oversampling FX in MasterTrack [Creator]">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:05:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:05:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Enable-Disable%20Oversampling%20FX%20in%20MasterTrack%20%5BCreator%5D.lua</source>
     </version>
     </reapack>
 
     <reapack name="DocShadrach_Toggle bypass Container [Creator].lua" type="script" desc="DocShadrach_Toggle bypass Container [Creator]">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:06:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:06:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Toggle%20bypass%20Container%20%5BCreator%5D.lua</source>
     </version>
     </reapack>
 
     <reapack name="DocShadrach_Toggle bypass FX [Creator].lua" type="script" desc="DocShadrach_Toggle bypass FX [Creator]">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:07:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:07:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Toggle%20bypass%20FX%20%5BCreator%5D.lua</source>
     </version>
     </reapack>
 
     <reapack name="DocShadrach_Toggle mute Sends by index [Creator].lua" type="script" desc="DocShadrach_Toggle mute Sends by index [Creator]">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:08:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:08:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Toggle%20mute%20Sends%20by%20index%20%5BCreator%5D.lua</source>
     </version>
     </reapack>
 
     <reapack name="DocShadrach_Toggle mute Sends with Specific-Receive-Names [Creator].lua" type="script" desc="DocShadrach_Toggle mute Sends with Specific-Receive-Names [Creator]">
-    <version name="1.0.0" author="Doc Shadrach" time="2024-10-24T07:09:00Z">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:09:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Toggle%20mute%20Sends%20with%20Specific-Receive-Names%20%5BCreator%5D.lua</source>
     </version>
     </reapack>
