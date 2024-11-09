@@ -63,6 +63,12 @@
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Utilities/DocShadrach_Rename%20selected%20tracks%20using%20ReaImGui%20with%20selection%20auto-update.lua</source>
     </version>
     </reapack>
+
+    <reapack name="DocShadrach_Show notes duration in milliseconds based on bpm using ReaImGui.lua" type="script" desc="DocShadrach_Show notes duration in milliseconds based on bpm using ReaImGui">
+    <version name="1.0.0" author="Doc Shadrach" time="2024-11-09T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Utilities/DocShadrach_Show%20notes%20duration%20in%20milliseconds%20based%20on%20bpm%20using%20ReaImGui.lua</source>
+    </version>
+    </reapack>
  </category>
 
 </index>
