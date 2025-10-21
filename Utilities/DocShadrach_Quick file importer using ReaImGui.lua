@@ -87,20 +87,6 @@ local hidden_colors = {}  -- table to store hidden track colors
 -- PASTE THE CLIPBOARD HERE!
 -- ============================================================
 -- When you click "Copy State", paste the clipboard content here (in the next line):
--- Hidden colors (paste in hidden_colors initialization)
-local hidden_colors = {
-  [16777216] = true,
-  [33489024] = true,
-  [16777471] = true,
-  [23244300] = true,
-  [30481035] = true,
-}
-
--- Name filters (paste in hide_names_input initialization)
-local hide_names_input = "REALEARN"
-
--- Track levels filter (paste in hide_levels initialization)
-local hide_levels = 3
 
 -- ============================================================
 
