@@ -1,5 +1,5 @@
 -- @description Track-by-track file importer with folder hierarchy, track colors, import button, folder level filter, name-based track hide, color-based track filter, and existing files confirmation
--- @version 0.28
+-- @version 1.00
 -- @author DocShadrach
 
 local ctx = reaper.ImGui_CreateContext('Quick File Importer')
