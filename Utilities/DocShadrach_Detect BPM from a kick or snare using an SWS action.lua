@@ -1,4 +1,4 @@
--- Detect BPM from kick track using Xenakios Split at Transients (Improved version by Hernán + ChatGPT)
+-- Detect BPM from kick track using Xenakios Split at Transients
 -- Safe version: avoids nested undo blocks, reverts split cleanly, preserves project state
 
 function detect_bpm_with_xenakios()
