@@ -80,7 +80,13 @@
     <version name="1.0.0" author="Doc Shadrach" time="2025-10-21T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Utilities/DocShadrach_Quick%20file%20importer%20using%20ReaImGui.lua</source>
     </version>
-    </reapack> 
+    </reapack>
+
+    <reapack name="DocShadrach_Detect BPM from a kick or snare using an SWS action.lua" type="script" desc="DocShadrach_Detect BPM from a kick or snare using an SWS action.lua">
+    <version name="1.0.0" author="Doc Shadrach" time="2025-10-23T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Utilities/DocShadrach_Detect%20BPM%20from%20a%20kick%20or%20snare%20using%20an%20SWS%20action.lua</source>
+    </version>
+    </reapack>
  </category>
 
 </index>
