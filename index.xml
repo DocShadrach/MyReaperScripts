@@ -2,13 +2,13 @@
 <index version="1" name="DocShadrach Scripts">
 
  <category name="Creators">
-    <reapack name="DocShadrach_Selecting presets in loop [Creator] (F&B).lua" type="script" desc="DocShadrach_Selecting presets in loop [Creator] (F&B)">
+    <reapack name="DocShadrach_Selecting presets in loop [Creator] (F&amp;B).lua" type="script" desc="DocShadrach_Selecting presets in loop [Creator] (F&amp;B)">
     <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:01:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Selecting%20presets%20in%20loop%20%5BCreator%5D%20(F%26B).lua</source>
     </version>
     </reapack>
 
-    <reapack name="DocShadrach_Selecting plugins one by one in loop [Creator] (F&B).lua" type="script" desc="DocShadrach_Selecting plugins one by one in loop [Creator] (F&B)">
+    <reapack name="DocShadrach_Selecting plugins one by one in loop [Creator] (F&amp;B).lua" type="script" desc="DocShadrach_Selecting plugins one by one in loop [Creator] (F&amp;B)">
     <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:02:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Selecting%20plugins%20one%20by%20one%20in%20loop%20%5BCreator%5D%20(F%26B).lua</source>
     </version>
@@ -84,4 +84,3 @@
  </category>
 
 </index>
-
