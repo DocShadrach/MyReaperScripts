@@ -72,7 +72,10 @@
 
     <reapack name="DocShadrach_Simple track notepad using ReaImGui.lua" type="script" desc="DocShadrach_Simple track notepad using ReaImGui">
     <version name="1.0.0" author="Doc Shadrach" time="2024-11-13T07:00:00Z">
-    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Utilities/DocShadrach_Simple%20track%20notepad%20using%20ReaImGui.lua</source>
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/44c6092f739de7175472ac01e633a4b9fbbeb3c5/Utilities/DocShadrach_Simple%20track%20notepad%20using%20ReaImGui.lua</source>
+    </version>
+    <version name="1.1.0" author="Doc Shadrach" time="2025-10-24T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/46773da6891525876b6d04d49788c2cea112417d/Utilities/DocShadrach_Simple%20track%20notepad%20using%20ReaImGui.lua</source>
     </version>
     </reapack>
 
