@@ -1,5 +1,5 @@
 --@description Simple Track Notepad
---@version 1.1
+--@version 1.1.1
 --@author DocShadrach
 --@noindex
 
@@ -284,8 +284,15 @@ local function loop()
 
             r.ImGui_TextWrapped(ctx, "REMEMBER: Always press Enter to save the note")
 
-            if r.ImGui_Button(ctx, track_list_window_open and "Hide Tracks with Notes" or "Show Tracks with Notes") then
-                track_list_window_open = not track_list_window_open
+            -- Show tracks button logic - only enabled when there are notes
+            if #tracks_with_notes > 0 then
+                if r.ImGui_Button(ctx, track_list_window_open and "Hide Tracks with Notes" or "Show Tracks with Notes") then
+                    track_list_window_open = not track_list_window_open
+                end
+            else
+                r.ImGui_BeginDisabled(ctx)
+                r.ImGui_Button(ctx, "No tracks with notes yet")
+                r.ImGui_EndDisabled(ctx)
             end
         end
     end
