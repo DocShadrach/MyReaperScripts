@@ -77,6 +77,9 @@
     <version name="1.1.0" author="Doc Shadrach" time="2025-10-24T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/46773da6891525876b6d04d49788c2cea112417d/Utilities/DocShadrach_Simple%20track%20notepad%20using%20ReaImGui.lua</source>
     </version>
+    <version name="1.1.1" author="Doc Shadrach" time="2025-10-24T07:10:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/424f004585ac8d43d85ec60be6c026969aeb579f/Utilities/DocShadrach_Simple%20track%20notepad%20using%20ReaImGui.lua</source>
+    </version>
     </reapack>
 
     <reapack name="DocShadrach_Quick file importer using ReaImGui.lua" type="script" desc="DocShadrach_Quick file importer using ReaImGui">
