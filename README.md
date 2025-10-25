@@ -57,9 +57,39 @@ Standalone utility scripts that provide immediate functionality for common tasks
 - **ReaImGui Extension** (for scripts with graphical interfaces)
 - **SWS Extension** (for certain advanced functionality)
 
-## Installation
+## Installation via ReaPack
 
-1. Download the desired script files
+This repository is available as a ReaPack package for easy installation and updates:
+
+1. **Install ReaPack** (if not already installed):
+   - Download from: https://reapack.com/
+   - Follow the installation instructions for your operating system
+
+2. **Add the repository**:
+   - In REAPER, go to **Extensions menu > ReaPack > Import repositories...**
+   - Paste the following URL:
+     ```
+     https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/index.xml
+     ```
+   - Click **OK** to add the repository
+
+3. **Install scripts**:
+   - Go to **Extensions > ReaPack > Browse packages...**
+   - Search for "DocShadrach" or browse the available scripts
+   - Right-click on the scripts you want and select **Install**
+   - Click **Apply** to install the selected scripts
+
+4. **Access scripts**:
+   - The scripts will be available in REAPER's Action List
+   - Go to **Actions > Show Action List**
+   - Search for the script names to find and use them
+   - Assign keyboard shortcuts or toolbar buttons for quick access
+
+### Manual Installation (Alternative)
+
+If you prefer manual installation:
+
+1. Download the desired script files from this repository
 2. Place them in your REAPER Scripts directory:
    - Windows: `C:\Users\[Username]\AppData\Roaming\REAPER\Scripts\`
    - macOS: `~/Library/Application Support/REAPER/Scripts/`
@@ -76,31 +106,6 @@ Standalone utility scripts that provide immediate functionality for common tasks
 - **Utility Scripts**: These provide immediate functionality when run
 - Most scripts with graphical interfaces will automatically update when project parameters change
 - Track color coding and filtering helps organize large projects efficiently
-
-## Script Categories
-
-### FX Management
-- Oversampling control
-- Bypass toggling
-- Plugin selection cycling
-- Project-wide synchronization
-
-### Analysis & Calculation
-- BPM detection
-- Note duration calculation
-- Musical tempo analysis
-
-### File & Track Management
-- Advanced file importing
-- Batch track renaming
-- Track note-taking
-- Hierarchical organization
-
-### Workflow Enhancement
-- Drag-and-drop interfaces
-- Real-time updates
-- Keyboard shortcuts
-- Visual feedback systems
 
 ## Contributing
 
