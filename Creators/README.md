@@ -35,10 +35,10 @@ Key Features:
 - The generated script searches for ALL instances of the specified FX across every track in the project, ensuring comprehensive synchronization.
 - The generated script is automatically saved in REAPER's script directory and added to the Action List for future use.
 
-  Implements intelligent synchronization logic:
-        - If all FX instances are enabled: Disables all (sets to bypass)
-        - If all FX instances are disabled: Enables all (removes bypass)
-        - If mixed states are detected: Disables all first (next run will enable all)
+Implements intelligent synchronization logic:
+- If all FX instances are enabled: Disables all (sets to bypass)
+- If all FX instances are disabled: Enables all (removes bypass)
+- If mixed states are detected: Disables all first (next run will enable all)
 
 ### DocShadrach_Selecting plugins one by one in loop [Creator].lua
 This script allows the user to create a custom script that cycles through FX plugins on a specified track or within a container. Based on user input, it generates a new script that applies the action to all plugins or just a specified range, cycling through them by enabling the next FX and disabling the currently active one.
@@ -110,6 +110,4 @@ Key Features:
 - Mutes or unmutes only the sends directed to specified receiving track names.
 - The generated script is automatically saved and added to REAPER's Action List for future access.
 
-
-#### DOWNLOAD ALL: https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FDocShadrach%2FMyReaperScripts%2Ftree%2Fmain%2FCreators
 
