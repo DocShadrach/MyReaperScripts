@@ -23,6 +23,23 @@ Key Features:
 - Generates two scripts: one to enable oversampling and another to disable it (set to 1x).
 - Both scripts are automatically added to REAPER's Action List for future use.
 
+### DocShadrach_Project-wide sync ON-OFF FX [Creator].lua
+This script allows the user to generate a custom script that synchronizes the bypass state of a specific FX plugin across ALL tracks in the project. Based on user input for the FX name, it creates a script that intelligently manages the bypass state to ensure all instances of the same FX have the same ON/OFF status throughout the entire project.
+
+Key Features:
+
+- User input for the FX name only - no track specification needed as it operates project-wide.
+- The FX name does not need to be complete; a partial match is sufficient, but the input is case sensitive, meaning the capitalization must match exactly as displayed in the FX list.
+- The script searches for FX instances using the name provided by the user. If the user has renamed a plugin in the FX list, the script will only find it if the user input matches part of the new name. This behavior can be used strategically: users can rename specific plugin instances to include or exclude them from the script's action by choosing names that do or don't match the search criteria.
+- Only shows user notifications when mixed states are detected, asking for confirmation before proceeding.
+- The generated script searches for ALL instances of the specified FX across every track in the project, ensuring comprehensive synchronization.
+- The generated script is automatically saved in REAPER's script directory and added to the Action List for future use.
+
+  Implements intelligent synchronization logic:
+        - If all FX instances are enabled: Disables all (sets to bypass)
+        - If all FX instances are disabled: Enables all (removes bypass)
+        - If mixed states are detected: Disables all first (next run will enable all)
+
 ### DocShadrach_Selecting plugins one by one in loop [Creator].lua
 This script allows the user to create a custom script that cycles through FX plugins on a specified track or within a container. Based on user input, it generates a new script that applies the action to all plugins or just a specified range, cycling through them by enabling the next FX and disabling the currently active one.
 
