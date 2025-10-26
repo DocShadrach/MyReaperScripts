@@ -60,6 +60,9 @@
     <version name="1.0.0" author="Doc Shadrach" time="2025-10-25T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/fcbeca7d51339262b34f78a09b3665b5dba7dba1/Creators/DocShadrach_Project-wide%20sync%20ON-OFF%20FX%20%5BCreator%5D.lua</source>
     </version>
+    <version name="1.1.0" author="Doc Shadrach" time="2025-10-26T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/2212b17d0a3b098cde1ff83d85d57635d614b877/Creators/DocShadrach_Project-wide%20sync%20ON-OFF%20FX%20%5BCreator%5D.lua</source>
+    </version>
     </reapack>
  </category>
 
