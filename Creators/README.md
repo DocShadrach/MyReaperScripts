@@ -34,6 +34,8 @@ Key Features:
 - Only shows user notifications when mixed states are detected, asking for confirmation before proceeding.
 - The generated script searches for ALL instances of the specified FX across every track in the project, ensuring comprehensive synchronization.
 - The generated script is automatically saved in REAPER's script directory and added to the Action List for future use.
+- Ignores offline FX instances completely - only considers active FX for synchronization.
+- Optional container support - user can choose whether to search inside track containers (first level only).
 
 Implements intelligent synchronization logic:
 - If all FX instances are enabled: Disables all (sets to bypass)
