@@ -93,7 +93,10 @@
 
     <reapack name="DocShadrach_Quick file importer using ReaImGui.lua" type="script" desc="DocShadrach_Quick file importer using ReaImGui">
     <version name="1.0.0" author="Doc Shadrach" time="2025-10-21T07:00:00Z">
-    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Utilities/DocShadrach_Quick%20file%20importer%20using%20ReaImGui.lua</source>
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/9d6bb13d339088381d8fb33334f34e4dbf13f68b/Utilities/DocShadrach_Quick%20file%20importer%20using%20ReaImGui.lua</source>
+    </version>
+    <version name="1.1.0" author="Doc Shadrach" time="2025-11-03T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/fd3cf52fcfb35d0d191b7ef78107ba7f5e3f91af/Utilities/DocShadrach_Quick%20file%20importer%20using%20ReaImGui.lua</source>
     </version>
     </reapack>
 
