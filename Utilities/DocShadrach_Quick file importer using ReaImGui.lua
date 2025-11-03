@@ -1,5 +1,5 @@
 -- @description Track-by-track file importer with folder hierarchy, track colors, import button, folder level filter, name-based track hide, color-based track filter, and existing files confirmation
--- @version 1.00
+-- @version 1.10
 -- @author DocShadrach
 
 local ctx = reaper.ImGui_CreateContext('Quick File Importer')
@@ -463,21 +463,24 @@ local function get_unique_track_colors()
   local color_order = {}  -- To maintain order
   
   for _, tr in ipairs(tracks) do
-    -- Check if track would be visible (not filtered by name or level)
-    local skip = false
-    for _, name in ipairs(hide_names) do
-      local escaped_name = name:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
-      if tr.name:match(escaped_name) then
-        skip = true
-        break
+    -- Check if track still exists and is valid
+    if reaper.ValidatePtr(tr.ptr, "MediaTrack*") then
+      -- Check if track would be visible (not filtered by name or level)
+      local skip = false
+      for _, name in ipairs(hide_names) do
+        local escaped_name = name:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
+        if tr.name:match(escaped_name) then
+          skip = true
+          break
+        end
       end
-    end
-    
-    if not skip and tr.level >= hide_levels then
-      local color = reaper.GetTrackColor(tr.ptr)
-      if not colors[color] then
-        colors[color] = true
-        table.insert(color_order, color)
+      
+      if not skip and tr.level >= hide_levels then
+        local color = reaper.GetTrackColor(tr.ptr)
+        if not colors[color] then
+          colors[color] = true
+          table.insert(color_order, color)
+        end
       end
     end
   end
@@ -490,16 +493,19 @@ local function get_track_name_for_color(color)
   local top_track_level = math.huge  -- Start with a very high level
   
   for _, tr in ipairs(tracks) do
-    local track_color = reaper.GetTrackColor(tr.ptr)
-    if track_color == color then
-      -- Check if this track is higher (lower level) or at the same level but earlier in the list
-      if tr.level < top_track_level then
-        top_track_name = tr.name
-        top_track_level = tr.level
-      elseif tr.level == top_track_level then
-        -- If same level, keep the first one we found (leftmost)
-        if not top_track_name then
+    -- Check if track still exists and is valid
+    if reaper.ValidatePtr(tr.ptr, "MediaTrack*") then
+      local track_color = reaper.GetTrackColor(tr.ptr)
+      if track_color == color then
+        -- Check if this track is higher (lower level) or at the same level but earlier in the list
+        if tr.level < top_track_level then
           top_track_name = tr.name
+          top_track_level = tr.level
+        elseif tr.level == top_track_level then
+          -- If same level, keep the first one we found (leftmost)
+          if not top_track_name then
+            top_track_name = tr.name
+          end
         end
       end
     end
@@ -514,32 +520,35 @@ local function get_visible_track_colors()
   local color_order = {}  -- To maintain order
   
   for _, tr in ipairs(tracks) do
-    local skip = false
-    
-    -- Check name filter
-    for _, name in ipairs(hide_names) do
-      local escaped_name = name:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
-      if tr.name:match(escaped_name) then
-        skip = true
-        break
+    -- Check if track still exists and is valid
+    if reaper.ValidatePtr(tr.ptr, "MediaTrack*") then
+      local skip = false
+      
+      -- Check name filter
+      for _, name in ipairs(hide_names) do
+        local escaped_name = name:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
+        if tr.name:match(escaped_name) then
+          skip = true
+          break
+        end
       end
-    end
-    
-    -- Check level filter
-    if tr.level < hide_levels then
-      skip = true
-    end
-    
-    -- Check color filter
-    local track_color = reaper.GetTrackColor(tr.ptr)
-    if hidden_colors[track_color] then
-      skip = true
-    end
-    
-    if not skip then
-      if not colors[track_color] then
-        colors[track_color] = true
-        table.insert(color_order, track_color)
+      
+      -- Check level filter
+      if tr.level < hide_levels then
+        skip = true
+      end
+      
+      -- Check color filter
+      local track_color = reaper.GetTrackColor(tr.ptr)
+      if hidden_colors[track_color] then
+        skip = true
+      end
+      
+      if not skip then
+        if not colors[track_color] then
+          colors[track_color] = true
+          table.insert(color_order, track_color)
+        end
       end
     end
   end
@@ -814,83 +823,86 @@ end
 -- Tracks display with hierarchy, colors, level filter, name filter, and isolation
 local function show_tracks_with_hierarchy()
   for i, tr in ipairs(tracks) do
-    local skip = false
-    
-    -- Check if track should be visible when isolation is active
-    if isolated_track and not should_show_track_in_isolation(i) then
-      skip = true
-    end
-    
-    if not skip then
-      for _, name in ipairs(hide_names) do
-        -- Escape special characters in pattern matching to avoid errors
-        local escaped_name = name:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
-        if tr.name:match(escaped_name) then
-          skip = true
-          break
-        end
-      end
-    end
-    
-    -- Check if track color is hidden
-    local track_color = reaper.GetTrackColor(tr.ptr)
-    if hidden_colors[track_color] then
-      skip = true
-    end
-    
-    if not skip and tr.level >= hide_levels then
-      local indent_amount = (tr.level - hide_levels + 1) * 20
-      reaper.ImGui_Indent(ctx, indent_amount)
-      local color = reaper.GetTrackColor(tr.ptr)
-      local r, g, b = nativeColorToRGB(color)
-      reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_Text(), reaper.ImGui_ColorConvertDouble4ToU32(r, g, b, 1.0))
-      -- Use unique ID for each track to avoid ImGui ID conflicts
-      reaper.ImGui_PushID(ctx, tostring(tr.ptr))
+    -- Check if track still exists and is valid
+    if reaper.ValidatePtr(tr.ptr, "MediaTrack*") then
+      local skip = false
       
-      -- Show the track selectable
-      reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_Text(), reaper.ImGui_ColorConvertDouble4ToU32(r, g, b, 1.0))
-      if reaper.ImGui_Selectable(ctx, tr.name, selected_track == i) then
-        selected_track = i
+      -- Check if track should be visible when isolation is active
+      if isolated_track and not should_show_track_in_isolation(i) then
+        skip = true
       end
-      reaper.ImGui_PopStyleColor(ctx)
       
-      -- Drag & Drop target for tracks
-      if reaper.ImGui_BeginDragDropTarget(ctx) then
-        local payload = reaper.ImGui_AcceptDragDropPayload(ctx, "FILE_DRAG")
-        if payload then
-          -- Save state before making assignments
-          save_undo_state()
-          
-          -- Assign dragged files to this track
-          local track_ptr = tr.ptr
-          assignments[track_ptr] = assignments[track_ptr] or {}
-          
-          -- Check if we have selected files (multiple files drag)
-          if #selected_files > 0 then
-            -- Assign all selected files
-            for _, file_path in ipairs(selected_files) do
-              table.insert(assignments[track_ptr], file_path)
-            end
-            -- Clear file selection after successful drop
-            selected_files = {}
-          elseif drag_anchor.data then
-            -- Assign single file from drag_anchor.data
-            for _, file_path in ipairs(drag_anchor.data) do
-              table.insert(assignments[track_ptr], file_path)
-            end
+      if not skip then
+        for _, name in ipairs(hide_names) do
+          -- Escape special characters in pattern matching to avoid errors
+          local escaped_name = name:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
+          if tr.name:match(escaped_name) then
+            skip = true
+            break
           end
         end
-        reaper.ImGui_EndDragDropTarget(ctx)
       end
       
-      -- Handle double-click for track isolation
-      if reaper.ImGui_IsItemHovered(ctx) and reaper.ImGui_IsMouseDoubleClicked(ctx, 0) then
-        toggle_track_isolation(i)
+      -- Check if track color is hidden
+      local track_color = reaper.GetTrackColor(tr.ptr)
+      if hidden_colors[track_color] then
+        skip = true
       end
       
-      reaper.ImGui_PopID(ctx)
-      reaper.ImGui_PopStyleColor(ctx)
-      reaper.ImGui_Unindent(ctx, indent_amount)
+      if not skip and tr.level >= hide_levels then
+        local indent_amount = (tr.level - hide_levels + 1) * 20
+        reaper.ImGui_Indent(ctx, indent_amount)
+        local color = reaper.GetTrackColor(tr.ptr)
+        local r, g, b = nativeColorToRGB(color)
+        reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_Text(), reaper.ImGui_ColorConvertDouble4ToU32(r, g, b, 1.0))
+        -- Use unique ID for each track to avoid ImGui ID conflicts
+        reaper.ImGui_PushID(ctx, tostring(tr.ptr))
+        
+        -- Show the track selectable
+        reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_Text(), reaper.ImGui_ColorConvertDouble4ToU32(r, g, b, 1.0))
+        if reaper.ImGui_Selectable(ctx, tr.name, selected_track == i) then
+          selected_track = i
+        end
+        reaper.ImGui_PopStyleColor(ctx)
+        
+        -- Drag & Drop target for tracks
+        if reaper.ImGui_BeginDragDropTarget(ctx) then
+          local payload = reaper.ImGui_AcceptDragDropPayload(ctx, "FILE_DRAG")
+          if payload then
+            -- Save state before making assignments
+            save_undo_state()
+            
+            -- Assign dragged files to this track
+            local track_ptr = tr.ptr
+            assignments[track_ptr] = assignments[track_ptr] or {}
+            
+            -- Check if we have selected files (multiple files drag)
+            if #selected_files > 0 then
+              -- Assign all selected files
+              for _, file_path in ipairs(selected_files) do
+                table.insert(assignments[track_ptr], file_path)
+              end
+              -- Clear file selection after successful drop
+              selected_files = {}
+            elseif drag_anchor.data then
+              -- Assign single file from drag_anchor.data
+              for _, file_path in ipairs(drag_anchor.data) do
+                table.insert(assignments[track_ptr], file_path)
+              end
+            end
+          end
+          reaper.ImGui_EndDragDropTarget(ctx)
+        end
+        
+        -- Handle double-click for track isolation
+        if reaper.ImGui_IsItemHovered(ctx) and reaper.ImGui_IsMouseDoubleClicked(ctx, 0) then
+          toggle_track_isolation(i)
+        end
+        
+        reaper.ImGui_PopID(ctx)
+        reaper.ImGui_PopStyleColor(ctx)
+        reaper.ImGui_Unindent(ctx, indent_amount)
+      end
     end
   end
 end
@@ -1070,6 +1082,9 @@ end
 -------------------------------------------------------------
 
 local function main()
+  -- Always refresh tracks to keep up with REAPER changes (undo, new tracks, etc.)
+  refresh_tracks()
+  
   reaper.ImGui_PushFont(ctx, FONT, 13)
   reaper.ImGui_SetNextWindowSize(ctx, 1000, 500, reaper.ImGui_Cond_FirstUseEver())
   local visible, open = reaper.ImGui_Begin(ctx, 'Quick File Importer', true, reaper.ImGui_WindowFlags_NoScrollbar())
@@ -1186,7 +1201,7 @@ QUICK FILE IMPORTER - ADVANCED FEATURES
 
 >> STATE MANAGEMENT
 • "Copy State" saves current filters to clipboard
-• Edit script code: Paste in the marked section at beginning
+• Edit script code: Paste in the marked section
 • "Reset State" clears all filters instantly
 
 >> IMPORT OPTIONS
@@ -1287,34 +1302,31 @@ Perfect for large mix templates! Use filters to focus on what matters.
     
     -- Drag & Drop source for selected files (multiple files)
     if #selected_files > 0 then
-      -- Drag & Drop source for selected files
-      if #selected_files > 0 then
-        reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_Button(), reaper.ImGui_ColorConvertDouble4ToU32(0.2, 0.5, 0.8, 0.3))
-        reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_ButtonHovered(), reaper.ImGui_ColorConvertDouble4ToU32(0.3, 0.6, 0.9, 0.5))
-        reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_ButtonActive(), reaper.ImGui_ColorConvertDouble4ToU32(0.1, 0.4, 0.7, 0.7))
-        
-        if reaper.ImGui_Button(ctx, "Drag selected files to tracks", -1, 0) then
-          -- Button clicked (not used for drag, just for visual feedback)
-        end
-        
-        -- Drag & Drop source for selected files
-        if reaper.ImGui_BeginDragDropSource(ctx) then
-          -- Store ALL selected files in global variable
-          drag_selected_files = {}
-          for _, file_path in ipairs(selected_files) do
-            table.insert(drag_selected_files, file_path)
-          end
-          reaper.ImGui_SetDragDropPayload(ctx, "FILE_DRAG", "multiple_files", 1)
-          if #selected_files == 1 then
-            reaper.ImGui_Text(ctx, "Drag file: " .. selected_files[1]:match("[^/\\]+$"))
-          else
-            reaper.ImGui_Text(ctx, "Drag " .. tostring(#selected_files) .. " files")
-          end
-          reaper.ImGui_EndDragDropSource(ctx)
-        end
-        
-        reaper.ImGui_PopStyleColor(ctx, 3)
+      reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_Button(), reaper.ImGui_ColorConvertDouble4ToU32(0.2, 0.5, 0.8, 0.3))
+      reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_ButtonHovered(), reaper.ImGui_ColorConvertDouble4ToU32(0.3, 0.6, 0.9, 0.5))
+      reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_ButtonActive(), reaper.ImGui_ColorConvertDouble4ToU32(0.1, 0.4, 0.7, 0.7))
+      
+      if reaper.ImGui_Button(ctx, "Drag selected files to tracks", -1, 0) then
+        -- Button clicked (not used for drag, just for visual feedback)
       end
+      
+      -- Drag & Drop source for selected files
+      if reaper.ImGui_BeginDragDropSource(ctx) then
+        -- Store ALL selected files in global variable
+        drag_selected_files = {}
+        for _, file_path in ipairs(selected_files) do
+          table.insert(drag_selected_files, file_path)
+        end
+        reaper.ImGui_SetDragDropPayload(ctx, "FILE_DRAG", "multiple_files", 1)
+        if #selected_files == 1 then
+          reaper.ImGui_Text(ctx, "Drag file: " .. selected_files[1]:match("[^/\\]+$"))
+        else
+          reaper.ImGui_Text(ctx, "Drag " .. tostring(#selected_files) .. " files")
+        end
+        reaper.ImGui_EndDragDropSource(ctx)
+      end
+      
+      reaper.ImGui_PopStyleColor(ctx, 3)
     end
     
     reaper.ImGui_EndChild(ctx)
