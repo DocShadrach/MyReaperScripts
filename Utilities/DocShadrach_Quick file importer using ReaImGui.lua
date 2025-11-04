@@ -1,5 +1,5 @@
 -- @description Track-by-track file importer with folder hierarchy, track colors, import button, folder level filter, name-based track hide, color-based track filter, and existing files confirmation
--- @version 1.10
+-- @version 1.20
 -- @author DocShadrach
 
 local ctx = reaper.ImGui_CreateContext('Quick File Importer')
@@ -227,11 +227,17 @@ local function create_items_for_track(track, file_list, replace_existing)
         reaper.SetMediaItemTake_Source(take, source)
         local length = reaper.GetMediaSourceLength(source)
         reaper.SetMediaItemLength(item, length, false)
+        -- Set take name to show filename in media item
+        local take_name = file_list[1]:match("([^/\\]+)$") or file_list[1]
+        reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", take_name, true)
       else
         -- Fallback to BR_SetTakeSourceFromFile
         reaper.BR_SetTakeSourceFromFile(take, file_list[1], false)
         local length = reaper.GetMediaSourceLength(reaper.GetMediaItemTake_Source(take))
         reaper.SetMediaItemLength(item, length, false)
+        -- Set take name to show filename in media item
+        local take_name = file_list[1]:match("([^/\\]+)$") or file_list[1]
+        reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", take_name, true)
       end
     else
       reaper.ShowMessageBox("File not found: " .. file_list[1], "Import Error", 0)
