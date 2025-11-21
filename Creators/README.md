@@ -79,16 +79,17 @@ Key Features:
 - The generated script is automatically saved in REAPER’s script directory and added to the Action List for future use.
 
 ### DocShadrach_Toggle bypass FX [Creator].lua
-This script allows the user to create a custom Lua script that toggles the bypass state of a specific FX plugin on a chosen track. It uses user input to specify the track name, FX name, and FX position within the chain, then generates a new script that can enable or disable the selected FX.
+This script allows the user to generate a custom Lua script that toggles the bypass state of a specific FX plugin on a chosen track. The user provides the track name, FX name, and FX position within the chain, and the script creates a new action that enables or disables the selected FX.
 
 Key Features:
 
-- Prompts the user to input the track name, FX name, and FX position within the FX chain. If the FX is unique, the position can be set to 0.
-- The FX position is relative, meaning it targets the nth instance of an FX with the same name, not the slot position.
-- The FX name does not need to be complete; a partial match is sufficient, but the input is case sensitive, so the capitalization must match exactly as shown in the FX list.
-- The name used is the one displayed in the track's FX list. If the user has renamed the plugin, the script will target that new name, allowing the user to give specific names to plugins to make identification easier.
-- The generated script searches for the specified FX on the selected track, ensuring it finds the correct instance. Once located, it toggles the bypass state of the FX.
-- The generated script is automatically saved in REAPER's script directory and added to the Action List for future use.
+- Prompts the user for the track name, FX name, and FX position within the FX chain. If the FX is unique, the position can be set to 0, and leaving the position field empty also counts as selecting a unique FX.
+- If the track name field is left empty, the generated script will operate on the currently selected track instead of searching by name.
+- The FX position is relative, meaning it targets the n-th instance of an FX with the same name, not the slot position.
+- The FX name does not need to be complete; a partial match is sufficient, but the input is case-sensitive and must match exactly as it appears in the FX list.
+- The name used is the one displayed in the track’s FX list. If the user has renamed the FX, the script will target that custom name, allowing precise identification.
+- The generated script searches for the specified FX on the target track and toggles its bypass state once found.
+- The generated script is automatically saved in REAPER’s script directory and added to the Action List for future use.
 
 ### DocShadrach_Toggle mute Sends by index [Creator].lua
 
