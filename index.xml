@@ -40,7 +40,10 @@
 
     <reapack name="DocShadrach_Toggle bypass FX [Creator].lua" type="script" desc="DocShadrach_Toggle bypass FX [Creator]">
     <version name="1.0.0" author="Doc Shadrach" time="2024-10-25T07:07:00Z">
-    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Creators/DocShadrach_Toggle%20bypass%20FX%20%5BCreator%5D.lua</source>
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/81b1f0440c50f48de3014489863635c9c177145e/Creators/DocShadrach_Toggle%20bypass%20FX%20%5BCreator%5D.lua</source>
+    </version>
+    <version name="1.1.0" author="Doc Shadrach" time="2025-11-21T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/a46d8c7fee4503f3eb2e4ec92a1e9ebff464de9f/Creators/DocShadrach_Toggle%20bypass%20FX%20%5BCreator%5D.lua</source>
     </version>
     </reapack>
 
