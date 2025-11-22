@@ -1,7 +1,7 @@
 -- @description Project Startup Manager
 -- @author DocShadrach (Code by Your Reaper Lua Expert)
--- @version 1.0
--- @about Manager interface to add/remove/bypass project-specific startup actions. Links with the Loader script via SWS.
+-- @version 1.1
+-- @about Manager interface with full status feedback (Bypassed, Saved, Linked, etc.).
 -- @requirement ReaImGui
 
 local r = reaper
@@ -13,20 +13,27 @@ local ctx = r.ImGui_CreateContext('StartupManager')
 local FILE_NAME = "project_startup_actions.lua"
 local EXT_SECTION = "StartupManager"
 local EXT_KEY = "ActionList"
--- Updated to match your specific filename for auto-linking
 local LOADER_SEARCH_NAME = "DocShadrach_Project Startup Loader" 
-local WINDOW_W, WINDOW_H = 500, 420 
+local WINDOW_W, WINDOW_H = 500, 450 
 local WINDOW_OPACITY = 0.95
+local MSG_DURATION = 3.0 -- Mensajes duran 3 segundos
 
 -- =========================================================
 -- DATA
 -- =========================================================
 local actions_list = {} 
 local status_msg = ""
+local status_clear_time = 0
 
 -- =========================================================
 -- HELPERS
 -- =========================================================
+
+function SetStatus(msg, is_error)
+    status_msg = msg
+    status_clear_time = r.time_precise() + MSG_DURATION
+    return is_error == nil or not is_error 
+end
 
 function GetLocalFilePath()
     local _, proj_fn = r.EnumProjects(-1, "")
@@ -58,12 +65,10 @@ function SaveData()
             f:close()
             return true
         else
-            status_msg = "Error: Write failed."
-            return false
+            return SetStatus("Error: Write failed.", true)
         end
     else
-        status_msg = "Saved to Project Data only."
-        return false
+        return SetStatus("Saved to Project Data (Memory) only.", false)
     end
 end
 
@@ -120,7 +125,7 @@ function LoadActions()
     
     if loaded_from_ext and path and not loaded_from_file then
         if SaveData() then
-            status_msg = "Synced: File regenerated."
+            SetStatus("Synced: File regenerated.")
         end
     end
 end
@@ -171,23 +176,19 @@ function DrawHelpPopup()
         r.ImGui_Separator(ctx)
         r.ImGui_Spacing(ctx)
         
-        r.ImGui_TextColored(ctx, 0xFFAA33FF, "SETUP STEPS (Do once per project):")
+        r.ImGui_TextColored(ctx, 0xFFAA33FF, "SETUP STEPS:")
         
-        -- STEP 1: SAVE
         r.ImGui_Text(ctx, "1. SAVE your project first.")
         r.ImGui_TextDisabled(ctx, "   (The script needs a folder to store the config file).")
         r.ImGui_Spacing(ctx)
 
-        -- STEP 2: ADD
         r.ImGui_Text(ctx, "2. Add actions to the list below.")
         r.ImGui_Spacing(ctx)
 
-        -- STEP 3: LINK
         r.ImGui_Text(ctx, "3. Click the GREEN button 'LINK LOADER (SWS)'.")
         r.ImGui_TextDisabled(ctx, "   (This automatically COPIES the Loader ID and OPENS the SWS dialog)")
         r.ImGui_Spacing(ctx)
         
-        -- STEP 4: PASTE (Highligted)
         r.ImGui_Text(ctx, "4.") 
         r.ImGui_SameLine(ctx)
         r.ImGui_PushStyleColor(ctx, r.ImGui_Col_Text(), 0xFFFF00FF) -- Yellow
@@ -232,7 +233,6 @@ function Loop()
         end
         
         r.ImGui_SameLine(ctx)
-        -- Right align Help button
         local avail_w = r.ImGui_GetContentRegionAvail(ctx)
         r.ImGui_SetCursorPosX(ctx, r.ImGui_GetCursorPosX(ctx) + avail_w - 130)
         
@@ -261,16 +261,16 @@ function Loop()
                 local name = GetCommandName(clip)
                 table.insert(actions_list, {id = clip, name = name, enabled = true})
                 SaveData()
-                status_msg = "Added: " .. name
+                SetStatus("Added: " .. name)
             else
-                status_msg = "Clipboard is empty."
+                SetStatus("Clipboard is empty.", true)
             end
         end
 
         r.ImGui_Separator(ctx)
         
         -- LIST REGION
-        if r.ImGui_BeginChild(ctx, "ListRegion", 0, -40) then
+        if r.ImGui_BeginChild(ctx, "ListRegion", 0, -70) then -- Space for status
             if #actions_list == 0 then
                 r.ImGui_TextDisabled(ctx, "No actions added yet.")
             else
@@ -279,40 +279,61 @@ function Loop()
                     r.ImGui_TableSetupColumn(ctx, "On", r.ImGui_TableColumnFlags_WidthFixed(), 30)
                     r.ImGui_TableSetupColumn(ctx, "Action Name", r.ImGui_TableColumnFlags_WidthStretch())
                     r.ImGui_TableSetupColumn(ctx, "Del", r.ImGui_TableColumnFlags_WidthFixed(), 30)
+                    
                     local to_remove = nil
+                    
                     for i, action in ipairs(actions_list) do
                         r.ImGui_TableNextRow(ctx)
                         r.ImGui_TableSetColumnIndex(ctx, 0)
                         r.ImGui_TextDisabled(ctx, tostring(i))
+                        
+                        -- CHECKBOX (BYPASS)
                         r.ImGui_TableSetColumnIndex(ctx, 1)
                         r.ImGui_PushID(ctx, i)
                         if r.ImGui_Checkbox(ctx, "", action.enabled) then
                             action.enabled = not action.enabled
                             SaveData()
+                            -- FEEDBACK FOR BYPASS/ENABLE
+                            if action.enabled then
+                                SetStatus("Action Enabled (Saved)")
+                            else
+                                SetStatus("Action Bypassed (Saved)")
+                            end
                         end
                         r.ImGui_PopID(ctx)
+                        
                         r.ImGui_TableSetColumnIndex(ctx, 2)
                         if not action.enabled then r.ImGui_PushStyleColor(ctx, r.ImGui_Col_Text(), 0x888888FF) end
                         r.ImGui_Text(ctx, action.name)
                         if not action.enabled then r.ImGui_PopStyleColor(ctx) end
                         if r.ImGui_IsItemHovered(ctx) then r.ImGui_SetTooltip(ctx, "ID: " .. action.id) end
+                        
+                        -- DELETE
                         r.ImGui_TableSetColumnIndex(ctx, 3)
                         r.ImGui_PushStyleColor(ctx, r.ImGui_Col_Button(), 0xAA3333FF)
                         if r.ImGui_Button(ctx, "X##"..i) then to_remove = i end
                         r.ImGui_PopStyleColor(ctx)
                     end
                     r.ImGui_EndTable(ctx)
+                    
                     if to_remove then
+                        local name = actions_list[to_remove].name
                         table.remove(actions_list, to_remove)
                         SaveData()
+                        SetStatus("Action Removed (Saved)")
                     end
                 end
             end
             r.ImGui_EndChild(ctx)
         end
         
-        -- FOOTER
-        if r.ImGui_Button(ctx, "RELOAD LIST") then LoadActions() end
+        r.ImGui_Separator(ctx)
+
+        -- FOOTER BUTTONS
+        if r.ImGui_Button(ctx, "RELOAD LIST") then 
+            LoadActions() 
+            SetStatus("List Reloaded")
+        end
         r.ImGui_SameLine(ctx)
         
         local btn_color = 0x44AA44FF 
@@ -320,23 +341,29 @@ function Loop()
         if r.ImGui_Button(ctx, "LINK LOADER (SWS)") then
              local sws_action_id = r.NamedCommandLookup("_S&M_SET_PRJ_ACTION")
              if sws_action_id == 0 then
-                 status_msg = "Error: SWS Extension not installed."
+                 SetStatus("Error: SWS Extension not installed.", true)
              else
                  local smart_id = GetSmartLoaderID()
                  if smart_id then
                      if r.CF_SetClipboard then r.CF_SetClipboard(smart_id) end
                      r.Main_OnCommand(sws_action_id, 0)
-                     status_msg = "SWS Dialog Opened. Loader ID is in Clipboard."
+                     SetStatus("Linked!!!") -- REQUESTED MESSAGE
                  else
-                     status_msg = "Error: Loader not found in Action List."
+                     SetStatus("Error: Loader not found in Action List.", true)
                  end
              end
         end
         r.ImGui_PopStyleColor(ctx)
         
+        -- STATUS BAR (Timed)
         if status_msg ~= "" then
-            r.ImGui_SameLine(ctx)
-            r.ImGui_TextColored(ctx, 0xFFFF00FF, status_msg)
+            if r.time_precise() > status_clear_time then
+                status_msg = ""
+            else
+                r.ImGui_Spacing(ctx)
+                -- Yellow color for visibility
+                r.ImGui_TextColored(ctx, 0xFFFF00FF, ">> " .. status_msg)
+            end
         end
 
         r.ImGui_End(ctx)
