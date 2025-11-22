@@ -4,8 +4,8 @@ local ctx = reaper.ImGui_CreateContext('Notes in ms')
 -- Variables to track tempo and note durations
 local current_bpm = reaper.Master_GetTempo()
 local note_durations = {}
-local show_triplet = true
-local show_dotted = true
+local show_triplet = false
+local show_dotted = false
 
 -- Define note divisions based on quarter note as 1/4
 local divisions = {
