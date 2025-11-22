@@ -125,6 +125,9 @@
     <version name="1.0.0" author="Doc Shadrach" time="2025-11-22T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/c7f84c7493753aac52754296a9698beef96522cd/Utilities/DocShadrach_Project%20Startup%20Manager.lua</source>
     </version>
+    <version name="1.1.0" author="Doc Shadrach" time="2025-11-22T07:05:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/b09d43f9fe935aea3564ed9589133382517c9547/Utilities/DocShadrach_Project%20Startup%20Manager.lua</source>
+    </version>
     </reapack>
  </category>
 
