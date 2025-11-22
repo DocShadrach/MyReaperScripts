@@ -13,6 +13,33 @@ Key Features:
 - Provides a confirmation dialog to apply the detected BPM to the project or keep the current tempo.
 - Preserves the original project view, cursor position, and item selection after analysis.
 
+### DocShadrach_Project Startup Loader.lua
+
+This script acts as the execution engine for the Project Startup Manager. It is designed to be set as the SWS Project Startup Action. Upon loading a project, it intelligently locates and executes the list of actions defined by the Manager, handling both saved projects and new projects derived from templates.
+
+Key Features:
+
+- Hybrid Loading Logic: Prioritizes reading from the local project_startup_actions.lua file; if missing, falls back to reading Project ExtState metadata.
+- Auto-Regeneration: Automatically recreates the local configuration file from metadata if it's missing (e.g., when first saving a new project created from a Template), ensuring the list becomes editable.
+- Secure Parsing: Uses strict text parsing instead of direct execution (dofile), ensuring that only valid Reaper Command IDs are triggered and preventing arbitrary code execution for security.
+- Bypass Recognition: Respects the bypass state set in the Manager, ignoring actions commented out in the configuration.
+- Relative Pathing: Dynamically locates the configuration file relative to the current project's .rpp location.
+- Silent Operation: Runs invisibly in the background during project load without interrupting the user workflow.
+
+### DocShadrach_Project Startup Manager.lua
+
+This script provides a comprehensive graphical interface to manage project-specific startup actions. Unlike global startup actions, this tool allows you to define a unique list of commands (actions/scripts) that execute only when a specific project is opened. It works in tandem with the "Project Startup Loader" script and supports Project Templates via metadata embedding.
+
+Key Features:
+
+- Project-Specific Context: Creates and manages a local Lua file alongside your .rpp project file to store action lists.
+- Template Support (Hybrid Architecture): Saves action lists to both the local file and Project ExtState metadata, ensuring startup actions persist even when creating new projects from Templates.
+- Smart SWS Linking: Includes a "Link Loader" button that automatically finds the Loader script ID, copies it to the clipboard, and opens the SWS Startup Action dialog for easy setup.
+- Action Bypass: Allows toggling actions on/off via checkboxes without deleting them from the list.
+- Clipboard Workflow: Features a "Paste Action from Clipboard" button to quickly add Command IDs copied from the Reaper Action List.
+- Safety & Sync: Automatically detects unsaved projects (warning the user) and auto-regenerates local files from metadata if they are missing (e.g., after loading a template).
+- Integrated Help: Built-in instructions guide the user through the initial setup process.
+
 ### DocShadrach_Quick file importer using ReaImGui.lua
 This script provides an advanced file import interface with drag-and-drop functionality, track filtering, and hierarchical organization. It allows users to import audio files to specific tracks with comprehensive filtering and assignment management.
 
@@ -72,3 +99,4 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
