@@ -109,9 +109,21 @@
     </version>
     </reapack>
 
-    <reapack name="DocShadrach_Detect BPM from a kick or snare using an SWS action.lua" type="script" desc="DocShadrach_Detect BPM from a kick or snare using an SWS action.lua">
+    <reapack name="DocShadrach_Detect BPM from a kick or snare using an SWS action.lua" type="script" desc="DocShadrach_Detect BPM from a kick or snare using an SWS action">
     <version name="1.0.0" author="Doc Shadrach" time="2025-10-23T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/Utilities/DocShadrach_Detect%20BPM%20from%20a%20kick%20or%20snare%20using%20an%20SWS%20action.lua</source>
+    </version>
+    </reapack>
+
+    <reapack name="DocShadrach_Project Startup Loader.lua" type="script" desc="DocShadrach_Project Startup Loader">
+    <version name="1.0.0" author="Doc Shadrach" time="2025-11-22T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/3330cd3c61780dbd9cf8b640d9a3be03481a54c1/Utilities/DocShadrach_Project%20Startup%20Loader.lua</source>
+    </version>
+    </reapack>
+ 
+    <reapack name="DocShadrach_Project Startup Manager.lua" type="script" desc="DocShadrach_Project Startup Manager">
+    <version name="1.0.0" author="Doc Shadrach" time="2025-11-22T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/c7f84c7493753aac52754296a9698beef96522cd/Utilities/DocShadrach_Project%20Startup%20Manager.lua</source>
     </version>
     </reapack>
  </category>
