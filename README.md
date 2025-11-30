@@ -69,7 +69,7 @@ This repository is available as a ReaPack package for easy installation and upda
    - In REAPER, go to **Extensions menu > ReaPack > Import repositories...**
    - Paste the following URL:
      ```
-     https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/refs/heads/main/index.xml
+     https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/master/index.xml
      ```
    - Click **OK** to add the repository
 
