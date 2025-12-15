@@ -13,6 +13,20 @@ Key Features:
 - Provides a confirmation dialog to apply the detected BPM to the project or keep the current tempo.
 - Preserves the original project view, cursor position, and item selection after analysis.
 
+### DocShadrach_Global FX bypass synchronizer using ReaImGui.lua
+
+This script provides a reactive interface to globally synchronize the bypass state of specific FX plugins across the entire project. It monitors FX states in real-time, allowing users to enable or disable plugins by name with immediate visual feedback, supporting complex routing including FX containers.
+
+Key Features:
+
+- Reactive Real-Time Monitoring: Continuously scans the project to reflect the current state of plugins (Enabled, Disabled, or Mixed) via color-coded buttons.
+- Name-Based Synchronization: Targets plugins based on a case-insensitive string search (e.g., "ReaEQ" affects all ReaEQ instances).
+- Visual State Feedback: Buttons light up bright Green (All On) or Red (All Off) and dim when inactive; Mixed states are highlighted in Amber.
+- Container Support: Optional scanning of first-level FX Containers to manage complex chains.
+- Smart Mixed-State Handling: Detects when some instances are on and others off, allowing the user to force a uniform state with a single click.
+- CPU Optimization: Implements intelligent throttling to scan tracks efficiently without affecting playback performance.
+- Safety & Undo: Automatically ignores offline FX and creates named Undo points for every synchronization action.
+
 ### DocShadrach_Project Startup Loader.lua
 
 This script acts as the execution engine for the Project Startup Manager. It is designed to be set as the SWS Project Startup Action. Upon loading a project, it intelligently locates and executes the list of actions defined by the Manager, handling both saved projects and new projects derived from templates.
@@ -99,4 +113,5 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
 
