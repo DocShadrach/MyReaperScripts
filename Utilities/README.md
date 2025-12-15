@@ -20,12 +20,12 @@ This script provides a reactive interface to globally synchronize the bypass sta
 Key Features:
 
 - Reactive Real-Time Monitoring: Continuously scans the project to reflect the current state of plugins (Enabled, Disabled, or Mixed) via color-coded buttons.
-- Name-Based Synchronization: Targets plugins based on a case-insensitive string search (e.g., "ReaEQ" affects all ReaEQ instances).
+- Flexible Name Search: Targets plugins based on text search, with an optional Case Sensitive mode for precision.
 - Visual State Feedback: Buttons light up bright Green (All On) or Red (All Off) and dim when inactive; Mixed states are highlighted in Amber.
 - Container Support: Optional scanning of first-level FX Containers to manage complex chains.
 - Smart Mixed-State Handling: Detects when some instances are on and others off, allowing the user to force a uniform state with a single click.
 - CPU Optimization: Implements intelligent throttling to scan tracks efficiently without affecting playback performance.
-- Safety & Undo: Automatically ignores offline FX and creates named Undo points for every synchronization action.
+- Safety & Undo: Requires a minimum of 3 characters to activate controls (preventing accidental matches), ignores offline FX, and creates named Undo points.
 
 ### DocShadrach_Project Startup Loader.lua
 
@@ -113,5 +113,6 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
 
 
