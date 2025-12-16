@@ -13,6 +13,20 @@ Key Features:
 - Provides a confirmation dialog to apply the detected BPM to the project or keep the current tempo.
 - Preserves the original project view, cursor position, and item selection after analysis.
 
+### DocShadrach_FX scene manager and switcher using ReaImGui.lua
+
+This script provides a professional interface to define, manage, and switch between different sets of FX (Scenes) across the project. It allows users to create custom groups of plugins based on name patterns and toggle them instantly, functioning as a powerful A/B testing tool for mixing chains or distinct production stages.
+
+Key Features:
+
+- Custom FX Scenes: Define multiple FX groups (rows) using flexible name patterns, supporting comma-separated values (e.g., "ReaEQ, Pro-Q 3, SSL Channel").
+- Smart Exclusive Mode: Acts as an intelligent A/B switcher that automatically disables other scenes when activating a specific one, ideal for comparing different processing chains.
+- Scope Control: Includes a "Selected Tracks Only" option to limit the script's action to specific tracks (e.g., toggling vocal chains without affecting drums).
+- Drag-and-Drop Organization: Easily reorder scenes using a dedicated drag handle to maintain a logical workflow.
+- Real-Time Feedback: Buttons display live status (ON, OFF, or MIXED) based on the actual state of the plugins in the project.
+- Container Support: Scans root FX and first-level FX Containers to manage complex routing structures.
+- Project Persistence: Automatically saves all scene configurations and settings directly into the .rpp project file via ExtState.
+
 ### DocShadrach_Global FX bypass synchronizer using ReaImGui.lua
 
 This script provides a reactive interface to globally synchronize the bypass state of specific FX plugins across the entire project. It monitors FX states in real-time, allowing users to enable or disable plugins by name with immediate visual feedback, supporting complex routing including FX containers.
@@ -113,6 +127,7 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
 
 
 
