@@ -146,8 +146,8 @@
     </reapack>
 
     <<reapack name="Smart_Action_Button.jsfx" type="effect" desc="Smart Action Button (DocShadrach)">
-    <version name="1.0.0" author="Doc Shadrach" time="2025-12-16T09:00:00Z">
-    <source file="Smart_Action_Button.jsfx">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/59c88543f03042e8b6aa710def9c4265a4dcb78a/Utilities/Smart_Action_Button.jsfx</source>
+    <version name="1.0.0" author="Doc Shadrach" time="2025-12-16T10:00:00Z">
+    <source file="Smart_Action_Button.jsfx">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/400d7a6ec5273f4829d1c8294b9216a81ac2c468/Utilities/Smart_Action_Button.jsfx</source>
     </version>
     </reapack>
  </category>
