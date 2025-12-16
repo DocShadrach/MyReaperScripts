@@ -1,4 +1,4 @@
-desc: Smart Action Button (Docshadrach)
+desc: Smart Action Button (DocShadrach)
 // Author: Doc Shadrach
 // Version: 1.0
 
@@ -111,5 +111,6 @@ is_triggered ? gfx_a = 0;
 str_w=0; str_h=0; gfx_measurestr(">", str_w, str_h);
 gfx_x = w - str_w - 4; gfx_y = (h - str_h) / 2;
 gfx_drawstr(">");
+
 
 gfx_a = 1;
