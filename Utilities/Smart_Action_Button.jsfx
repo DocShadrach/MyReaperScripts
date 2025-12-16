@@ -1,0 +1,115 @@
+desc: Smart Action Button (Docshadrach)
+// Author: Doc Shadrach
+// Version: 1.0
+
+//  A visual button designed to be embedded in the TCP.
+//  It communicates with the 'Smart Action Loader' script.
+//  Controls:
+//  - Click Center: Execute assigned action.
+//  - Click Left/Right arrows (or Drag): Change Button ID (1-32).
+
+options:no_meter
+
+// SLIDER 1: Trigger (Monitored by Lua)
+slider1:0<0,1,1{OFF,ON}>-Trigger State
+
+// SLIDER 2: ID Selector (1-32)
+slider2:1<1,32,1>-Action ID
+
+@init
+last_cap = 0;
+label = #; 
+
+@slider
+slider2 = floor(slider2);
+
+@block
+spl0 = spl0;
+spl1 = spl1;
+
+@gfx 60 20
+gfx_clear = 0x202020; 
+w = gfx_w;
+h = gfx_h;
+
+// --- ZONES ---
+z_left  = w * 0.25;
+z_right = w * 0.75;
+
+// --- MOUSE LOGIC ---
+mouse_click = (mouse_cap & 1) && !(last_cap & 1);
+is_hover = (mouse_x >= 0 && mouse_x <= w && mouse_y >= 0 && mouse_y <= h);
+
+hover_left   = is_hover && mouse_x < z_left;
+hover_right  = is_hover && mouse_x > z_right;
+hover_center = is_hover && !hover_left && !hover_right;
+
+// --- INTERACTION ---
+mouse_click && is_hover ? (
+    hover_left ? (
+        slider2 -= 1;
+        slider2 < 1 ? slider2 = 32;
+        sliderchange(slider2);
+    ) : hover_right ? (
+        slider2 += 1;
+        slider2 > 32 ? slider2 = 1;
+        sliderchange(slider2);
+    ) : (
+        slider1 = 1;
+        sliderchange(slider1);
+    );
+);
+last_cap = mouse_cap;
+
+// --- DRAWING ---
+is_triggered = (slider1 > 0.5);
+
+// Colors
+col_bg_R = 0.25; col_bg_G = 0.25; col_bg_B = 0.25; 
+col_on_R = 0.00; col_on_G = 0.80; col_on_B = 0.50; 
+col_txt  = 0.90; 
+
+is_triggered ? (
+    gfx_r = col_on_R; gfx_g = col_on_G; gfx_b = col_on_B;
+) : (
+    hover_center ? (
+        gfx_r = col_bg_R + 0.1; gfx_g = col_bg_G + 0.1; gfx_b = col_bg_B + 0.1; 
+    ) : (
+        gfx_r = col_bg_R; gfx_g = col_bg_G; gfx_b = col_bg_B; 
+    );
+);
+
+// Body & Bevel
+gfx_rect(2, 2, w-4, h-4); 
+gfx_r = 0.1; gfx_g = 0.1; gfx_b = 0.1; 
+gfx_rect(2, 2, w-4, 1);   
+gfx_rect(2, h-3, w-4, 1); 
+gfx_rect(2, 2, 1, h-4);   
+gfx_rect(w-3, 2, 1, h-4); 
+
+// Text (Number)
+is_triggered ? ( gfx_r=0; gfx_g=0; gfx_b=0; ) : ( gfx_r=col_txt; gfx_g=col_txt; gfx_b=col_txt; );
+gfx_setfont(1, "Arial", h * 0.65, 'b'); 
+sprintf(label, "%d", slider2); 
+str_w=0; str_h=0; gfx_measurestr(label, str_w, str_h);
+gfx_x = (w - str_w) / 2;
+gfx_y = (h - str_h) / 2;
+gfx_drawstr(label);
+
+// Arrows
+arrow_sz = h * 0.35;
+gfx_setfont(2, "Arial", arrow_sz); 
+
+hover_left ? ( gfx_a = 1; gfx_r=1; gfx_g=0.7; gfx_b=0.2; ) : ( gfx_a = 0.3; gfx_r=1; gfx_g=1; gfx_b=1; ); 
+is_triggered ? gfx_a = 0; 
+str_w=0; str_h=0; gfx_measurestr("<", str_w, str_h);
+gfx_x = 4; gfx_y = (h - str_h) / 2;
+gfx_drawstr("<");
+
+hover_right ? ( gfx_a = 1; gfx_r=1; gfx_g=0.7; gfx_b=0.2; ) : ( gfx_a = 0.3; gfx_r=1; gfx_g=1; gfx_b=1; );
+is_triggered ? gfx_a = 0;
+str_w=0; str_h=0; gfx_measurestr(">", str_w, str_h);
+gfx_x = w - str_w - 4; gfx_y = (h - str_h) / 2;
+gfx_drawstr(">");
+
+gfx_a = 1;
