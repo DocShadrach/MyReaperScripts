@@ -145,6 +145,18 @@
     </version>
     </reapack>
 
+    <reapack name="DocShadrach_Smart Action Loader.lua" type="script" desc="DocShadrach_Smart Action Loader">
+    <version name="1.0.0" author="Doc Shadrach" time="2025-12-17T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/964af10ff19f9edfd6037876e1999ccc84948167/Utilities/DocShadrach_Smart%20Action%20Loader.lua</source>
+    </version>
+    </reapack>
+
+    <reapack name="DocShadrach_Smart Action Manager.lua" type="script" desc="DocShadrach_Smart Action Manager">
+    <version name="1.0.0" author="Doc Shadrach" time="2025-12-17T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/964af10ff19f9edfd6037876e1999ccc84948167/Utilities/DocShadrach_Smart%20Action%20Manager.lua</source>
+    </version>
+    </reapack>
+
     <reapack name="Smart_Action_Button.jsfx" type="effect" desc="Smart Action Button (DocShadrach)">
     <version name="1.0.0" author="Doc Shadrach" time="2025-12-16T11:00:00Z">
     <source file="Smart_Action_Button.jsfx">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/400d7a6ec5273f4829d1c8294b9216a81ac2c468/Utilities/Smart_Action_Button.jsfx</source>
