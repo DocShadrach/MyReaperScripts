@@ -143,6 +143,9 @@
     <version name="1.0.0" author="Doc Shadrach" time="2025-12-16T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/2623898213d5e99fb4792cc7de5903e94bac8fe5/Utilities/DocShadrach_FX%20scene%20manager%20and%20switcher%20using%20ReaImGui.lua</source>
     </version>
+    <version name="1.1.0" author="Doc Shadrach" time="2025-12-18T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/7f3d3404237f63b0492f32880a35a721fc982264/Utilities/DocShadrach_FX%20scene%20manager%20and%20switcher%20using%20ReaImGui.lua</source>
+    </version>
     </reapack>
 
     <reapack name="DocShadrach_Smart Action Loader.lua" type="script" desc="DocShadrach_Smart Action Loader">
