@@ -1,9 +1,10 @@
 -- @description FX Scene Manager and Switcher
--- @version 1.0
+-- @version 1.1
 -- @author DocShadrach
 -- @about
 --   A professional ReaImGui tool to define and switch between different sets of FX.
 --   Features:
+--   - Multi-Scene Support: Switch between 8 different pages/scenes of FX configurations.
 --   - Define multiple FX groups (Rows).
 --   - Supports Multiple Patterns per row (comma separated: "ReaEQ, Pro-Q").
 --   - "Selected Tracks Only" scope mode.
@@ -22,25 +23,36 @@ end
 
 -- CONFIGURATION CONSTANTS
 local EXT_SECTION = "DocShadrach_FXManager"
-local EXT_KEY = "SceneData"
+local EXT_KEY_PREFIX = "SceneData_" -- Prefix for multiple scenes
+local EXT_OPT_KEY = "GlobalOptions"
 local SCAN_INTERVAL = 0.3
+local MAX_SCENES = 8
 
 -- COLORS
 local COL_GREEN = 0x2E7D32FF
 local COL_RED   = 0xC62828FF
 local COL_AMBER = 0xFF8F00FF
 local COL_GREY  = 0x444444FF
+local COL_TEXT_YELLOW = 0xFFFF00FF -- For the Scene Selector
 
 -- STATE
-local scenes = {} 
+-- all_scenes structure: { [1] = { {name="Row1", pattern="..."}, ... }, [2] = {...} }
+local all_scenes = {} 
+local current_scene_idx = 1
+
 local global_exclusive = true
 local include_containers = true
 local scope_selected = false 
 local last_scan_time = 0
 
--- INITIAL DEFAULT STATE
+-- INIT DATA STRUCTURE
+for i = 1, MAX_SCENES do
+    all_scenes[i] = {}
+end
+
+-- INITIAL DEFAULT STATE (If empty)
 local function addScene(name, pattern)
-    table.insert(scenes, {
+    table.insert(all_scenes[current_scene_idx], {
         name = name or "New Set",
         pattern = pattern or "",
         status_color = COL_GREY,
@@ -53,43 +65,90 @@ end
 -- PERSISTENCE
 -------------------------------------------------------------------------
 
-local function serialize()
+local function serialize_rows(rows)
     local str = ""
-    for _, scene in ipairs(scenes) do
-        local n = scene.name:gsub("|", ""):gsub("::", "")
-        local p = scene.pattern:gsub("|", ""):gsub("::", "")
+    for _, item in ipairs(rows) do
+        local n = item.name:gsub("|", ""):gsub("::", "")
+        local p = item.pattern:gsub("|", ""):gsub("::", "")
         str = str .. n .. "|" .. p .. "::"
     end
-    str = str .. "OPT_EXCL=" .. tostring(global_exclusive) .. "::"
-    str = str .. "OPT_CONT=" .. tostring(include_containers) .. "::"
-    str = str .. "OPT_SCOPE=" .. tostring(scope_selected) 
     return str
 end
 
 local function saveState()
-    local data = serialize()
-    r.SetProjExtState(0, EXT_SECTION, EXT_KEY, data)
+    -- 1. Save Global Options & Current Scene Index
+    local opt_str = "OPT_EXCL=" .. tostring(global_exclusive) .. "::" ..
+                    "OPT_CONT=" .. tostring(include_containers) .. "::" ..
+                    "OPT_SCOPE=" .. tostring(scope_selected) .. "::" ..
+                    "CUR_SCENE=" .. tostring(current_scene_idx)
+    r.SetProjExtState(0, EXT_SECTION, EXT_OPT_KEY, opt_str)
+
+    -- 2. Save ALL scenes
+    for i = 1, MAX_SCENES do
+        local data = serialize_rows(all_scenes[i])
+        r.SetProjExtState(0, EXT_SECTION, EXT_KEY_PREFIX .. i, data)
+    end
+    
+    r.MarkProjectDirty(0)
 end
 
 local function loadState()
-    local retval, data = r.GetProjExtState(0, EXT_SECTION, EXT_KEY)
-    if retval == 1 and data ~= "" then
-        scenes = {} 
-        for entry in data:gmatch("([^::]+)") do
-            if entry:find("OPT_EXCL=") then
-                global_exclusive = (entry:match("OPT_EXCL=(.*)") == "true")
-            elseif entry:find("OPT_CONT=") then
-                include_containers = (entry:match("OPT_CONT=(.*)") == "true")
-            elseif entry:find("OPT_SCOPE=") then
-                scope_selected = (entry:match("OPT_SCOPE=(.*)") == "true")
-            else
-                local name, pattern = entry:match("^(.*)|(.*)$")
-                if name then addScene(name, pattern) end
-            end
+    -- 1. Load Options
+    local retval, opt_data = r.GetProjExtState(0, EXT_SECTION, EXT_OPT_KEY)
+    if retval == 1 and opt_data ~= "" then
+        if opt_data:find("OPT_EXCL=") then global_exclusive = (opt_data:match("OPT_EXCL=(.*)::OPT_CONT") == "true") end
+        if opt_data:find("OPT_CONT=") then include_containers = (opt_data:match("OPT_CONT=(.*)::OPT_SCOPE") == "true") end
+        if opt_data:find("OPT_SCOPE=") then scope_selected = (opt_data:match("OPT_SCOPE=(.*)::CUR_SCENE") == "true") end
+        if opt_data:find("CUR_SCENE=") then 
+            local cs = tonumber(opt_data:match("CUR_SCENE=(.*)"))
+            if cs and cs >= 1 and cs <= MAX_SCENES then current_scene_idx = cs end
         end
     else
-        addScene("Set A (Examples)", "ReaEQ, ReaComp")
-        addScene("Set B (Examples)", "ReaDelay, ReaVerb")
+        -- Check for Legacy Data (Version 1.0)
+        local ret_old, data_old = r.GetProjExtState(0, EXT_SECTION, "SceneData")
+        if ret_old == 1 and data_old ~= "" then
+            -- Import legacy data into Scene 1
+            for entry in data_old:gmatch("([^::]+)") do
+                if entry:find("OPT_EXCL=") then global_exclusive = (entry:match("OPT_EXCL=(.*)") == "true")
+                elseif entry:find("OPT_CONT=") then include_containers = (entry:match("OPT_CONT=(.*)") == "true")
+                elseif entry:find("OPT_SCOPE=") then scope_selected = (entry:match("OPT_SCOPE=(.*)") == "true")
+                else
+                    local name, pattern = entry:match("^(.*)|(.*)$")
+                    if name then 
+                        table.insert(all_scenes[1], { name=name, pattern=pattern, status_color=COL_GREY, match_stats="...", is_fully_active=false })
+                    end
+                end
+            end
+            -- Clear legacy key to avoid confusion
+            r.SetProjExtState(0, EXT_SECTION, "SceneData", "")
+            return -- Exit, we loaded legacy data
+        end
+    end
+
+    -- 2. Load Scenes
+    for i = 1, MAX_SCENES do
+        local rv, s_data = r.GetProjExtState(0, EXT_SECTION, EXT_KEY_PREFIX .. i)
+        if rv == 1 and s_data ~= "" then
+            all_scenes[i] = {} -- Clear init
+            for entry in s_data:gmatch("([^::]+)") do
+                local name, pattern = entry:match("^(.*)|(.*)$")
+                if name then 
+                    table.insert(all_scenes[i], {
+                        name = name, 
+                        pattern = pattern, 
+                        status_color = COL_GREY, 
+                        match_stats = "...", 
+                        is_fully_active = false
+                    })
+                end
+            end
+        end
+    end
+    
+    -- If Scene 1 empty, add defaults
+    if #all_scenes[1] == 0 then
+        table.insert(all_scenes[1], {name="Set A (Examples)", pattern="ReaEQ, ReaComp", status_color=COL_GREY, match_stats="...", is_fully_active=false})
+        table.insert(all_scenes[1], {name="Set B (Examples)", pattern="ReaDelay, ReaVerb", status_color=COL_GREY, match_stats="...", is_fully_active=false})
     end
 end
 
@@ -147,7 +206,6 @@ local function getPatternStats(pattern)
                 local retval, cCount = r.TrackFX_GetNamedConfigParm(tr, i, "container_count")
                 if retval and tonumber(cCount) and tonumber(cCount) > 0 then
                     for cIdx = 0, tonumber(cCount) - 1 do
-                        -- Formula for 1st Level Nesting
                         local gIdx = 0x2000000 + (cIdx + 1) * (fxCount + 1) + i + 1
                         local _, cName = r.TrackFX_GetFXName(tr, gIdx, "")
                         
@@ -167,7 +225,10 @@ local function getPatternStats(pattern)
 end
 
 local function updateMonitor()
-    for _, scene in ipairs(scenes) do
+    -- Only update CURRENT scene rows to save CPU
+    local current_rows = all_scenes[current_scene_idx]
+    
+    for _, scene in ipairs(current_rows) do
         local f, en, dis = getPatternStats(scene.pattern)
         scene.match_stats = f .. " Found"
         
@@ -188,9 +249,10 @@ local function updateMonitor()
 end
 
 local function moveScene(srcIndex, dstIndex)
+    local rows = all_scenes[current_scene_idx]
     if srcIndex == dstIndex then return end
-    local item = table.remove(scenes, srcIndex)
-    table.insert(scenes, dstIndex, item)
+    local item = table.remove(rows, srcIndex)
+    table.insert(rows, dstIndex, item)
     saveState()
 end
 
@@ -198,11 +260,12 @@ local function toggleScene(targetIndex, targetState)
     r.Undo_BeginBlock()
     r.PreventUIRefresh(1)
     
-    local targetPattern = scenes[targetIndex].pattern
+    local rows = all_scenes[current_scene_idx]
+    local targetPattern = rows[targetIndex].pattern
     
     local patternsToDisable = {}
     if global_exclusive and targetState == true then
-        for i, scene in ipairs(scenes) do
+        for i, scene in ipairs(rows) do
             if i ~= targetIndex and scene.pattern ~= "" then
                 table.insert(patternsToDisable, scene.pattern)
             end
@@ -212,16 +275,13 @@ local function toggleScene(targetIndex, targetState)
     local function processTrack(tr)
         local fxCount = r.TrackFX_GetCount(tr)
         
-        -- Helper to apply logic to a specific index
         local function applyLogic(idx, name)
             if r.TrackFX_GetOffline(tr, idx) then return end
             
-            -- 1. Apply Target State
             if nameMatches(name, targetPattern) then
                 r.TrackFX_SetEnabled(tr, idx, targetState)
             end
             
-            -- 2. Exclusive Logic
             if global_exclusive and targetState == true then
                 for _, otherP in ipairs(patternsToDisable) do
                     if nameMatches(name, otherP) and not nameMatches(name, targetPattern) then
@@ -233,11 +293,8 @@ local function toggleScene(targetIndex, targetState)
         
         for i = 0, fxCount - 1 do
             local _, name = r.TrackFX_GetFXName(tr, i, "")
-            
-            -- Process Root
             applyLogic(i, name)
             
-            -- Process First-Level Container
             if include_containers then
                 local retval, cCount = r.TrackFX_GetNamedConfigParm(tr, i, "container_count")
                 if retval and tonumber(cCount) and tonumber(cCount) > 0 then
@@ -258,7 +315,7 @@ local function toggleScene(targetIndex, targetState)
     r.PreventUIRefresh(-1)
     
     local actionText = targetState and "Turn ON " or "Turn OFF "
-    r.Undo_EndBlock(actionText .. scenes[targetIndex].name, -1)
+    r.Undo_EndBlock(actionText .. rows[targetIndex].name, -1)
     
     updateMonitor()
 end
@@ -275,15 +332,18 @@ local function loop()
     end
 
     local flags = r.ImGui_WindowFlags_NoCollapse()
-    r.ImGui_SetNextWindowSize(ctx, 550, 350, r.ImGui_Cond_FirstUseEver())
+    r.ImGui_SetNextWindowSize(ctx, 600, 350, r.ImGui_Cond_FirstUseEver())
     
     local visible, open = r.ImGui_Begin(ctx, 'FX Scene Manager', true, flags)
     
     if visible then
-        -- Header Options
+        -- 1. TOP HEADER (OPTIONS + SCENE SELECTOR)
+        local avail_w = r.ImGui_GetContentRegionAvail(ctx)
+        
+        -- Left: Options
         local chk_excl, new_excl = r.ImGui_Checkbox(ctx, "Exclusive Mode", global_exclusive)
         if chk_excl then global_exclusive = new_excl; saveState() end
-        if r.ImGui_IsItemHovered(ctx) then r.ImGui_SetTooltip(ctx, "Enabling one set disables the others.") end
+        if r.ImGui_IsItemHovered(ctx) then r.ImGui_SetTooltip(ctx, "Enabling one set disables the others (within this scene).") end
         
         r.ImGui_SameLine(ctx)
         local chk_cont, new_cont = r.ImGui_Checkbox(ctx, "Containers", include_containers)
@@ -293,13 +353,37 @@ local function loop()
         r.ImGui_SameLine(ctx)
         local chk_scope, new_scope = r.ImGui_Checkbox(ctx, "Selected Tracks Only", scope_selected)
         if chk_scope then scope_selected = new_scope; saveState() end
-        if r.ImGui_IsItemHovered(ctx) then r.ImGui_SetTooltip(ctx, "If checked, actions only affect currently selected tracks.") end
+        
+        -- Right: Scene Selector (Yellow)
+        r.ImGui_SameLine(ctx)
+        local right_align = avail_w - 125 -- Adjust to push right
+        if right_align > r.ImGui_GetCursorPosX(ctx) then r.ImGui_SetCursorPosX(ctx, right_align) end
+        
+        -- Prev Button
+        if r.ImGui_ArrowButton(ctx, "##prev", r.ImGui_Dir_Left()) then
+            current_scene_idx = current_scene_idx - 1
+            if current_scene_idx < 1 then current_scene_idx = MAX_SCENES end
+            saveState()
+            updateMonitor() -- Immediate update
+        end
+        
+        r.ImGui_SameLine(ctx)
+        r.ImGui_TextColored(ctx, COL_TEXT_YELLOW, "Scene < " .. current_scene_idx .. " >")
+        
+        r.ImGui_SameLine(ctx)
+        -- Next Button
+        if r.ImGui_ArrowButton(ctx, "##next", r.ImGui_Dir_Right()) then
+            current_scene_idx = current_scene_idx + 1
+            if current_scene_idx > MAX_SCENES then current_scene_idx = 1 end
+            saveState()
+            updateMonitor()
+        end
 
         r.ImGui_Separator(ctx)
         
-        -- Table
+        -- 2. TABLE (Displays rows for current_scene_idx)
         if r.ImGui_BeginTable(ctx, 'SceneTable_v2', 5, r.ImGui_TableFlags_Resizable() | r.ImGui_TableFlags_RowBg()) then
-            -- Column setup
+            
             r.ImGui_TableSetupColumn(ctx, '##Mov', r.ImGui_TableColumnFlags_WidthFixed() | r.ImGui_TableColumnFlags_NoResize(), 20)
             r.ImGui_TableSetupColumn(ctx, 'Status', r.ImGui_TableColumnFlags_WidthFixed(), 80)
             r.ImGui_TableSetupColumn(ctx, 'Set Name', r.ImGui_TableColumnFlags_WidthStretch())
@@ -307,9 +391,10 @@ local function loop()
             r.ImGui_TableSetupColumn(ctx, '##Del', r.ImGui_TableColumnFlags_WidthFixed(), 30)
             r.ImGui_TableHeadersRow(ctx)
             
+            local current_rows = all_scenes[current_scene_idx]
             local to_remove = nil
             
-            for i, scene in ipairs(scenes) do
+            for i, scene in ipairs(current_rows) do
                 r.ImGui_TableNextRow(ctx)
                 r.ImGui_PushID(ctx, i)
 
@@ -343,10 +428,10 @@ local function loop()
                 r.ImGui_PushStyleColor(ctx, r.ImGui_Col_Button(), btn_col)
                 if r.ImGui_Button(ctx, btn_txt, -1, 0) then
                     if scene.pattern ~= "" then
-                        -- SMART LOGIC
+                        -- SMART LOGIC (Scoped to current scene rows)
                         local targetState = true
                         local othersActive = false
-                        for k, otherS in ipairs(scenes) do
+                        for k, otherS in ipairs(current_rows) do
                             if k ~= i and (otherS.status_color == COL_GREEN or otherS.status_color == COL_AMBER) then
                                 othersActive = true; break
                             end
@@ -385,7 +470,7 @@ local function loop()
             r.ImGui_EndTable(ctx)
             
             if to_remove then
-                table.remove(scenes, to_remove)
+                table.remove(current_rows, to_remove)
                 saveState()
             end
         end
