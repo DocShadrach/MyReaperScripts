@@ -109,11 +109,11 @@ If you prefer manual installation:
 
 ## Contributing
 
-These scripts are designed for personal use but can be adapted for specific workflow needs. Feel free to modify and customize them according to your requirements.
+These scripts are designed to improve your REAPER workflow. Feel free to modify, customize, and adapt them to your personal or professional needs.
 
 ## License
 
-This collection is provided as-is for REAPER users. Please respect the original author's work when modifying or redistributing.
+These scripts are open source under the MIT License. See the `LICENSE` file for full terms.
 
 ---
 
