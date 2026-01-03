@@ -1,12 +1,12 @@
 -- @description Global FX Bypass Synchronizer
--- @version 1.1
+-- @version 1.2
 -- @author DocShadrach
 -- @about
 --   A ReaImGui tool to globally synchronize the bypass state of specific FX plugins by name.
 --   Features:
 --   - Real-time monitoring of FX states across the project.
 --   - Reactive GUI: Buttons light up based on current state.
---   - Supports FX inside Containers (First level).
+--   - Supports FX inside Containers (Infinite levels via Polynomial Addressing).
 --   - Handles mixed states (some enabled, some disabled).
 --   - Option for Case Sensitive search.
 --   - Safety: Requires min. 3 characters to activate.
@@ -52,49 +52,61 @@ local function nameMatches(sourceName, searchPattern, isSensitive)
 end
 
 -------------------------------------------------------------------------
--- CORE: SCANNING & LOGIC
+-- CORE: POLYNOMIAL RECURSIVE ENGINE
 -------------------------------------------------------------------------
 
-local function scanTrack(track, nameToFind, checkContainers, isSensitive)
-    local found = 0
-    local en = 0
-    local dis = 0
-    local off = 0
+local function ScanContainersRecursive(track, container_id, parent_fx_count, multiplier, nameToFind, isSensitive, callback)
+    local diff = (parent_fx_count + 1) * multiplier
+    local ok, c_fx_count = r.TrackFX_GetNamedConfigParm(track, 0x2000000 + container_id, "container_count")
+    if not ok then return end
     
-    local fxCount = r.TrackFX_GetCount(track)
-    
-    for fxIndex = 0, fxCount - 1 do
-        local _, currentFxName = r.TrackFX_GetFXName(track, fxIndex, "")
-        
-        if nameMatches(currentFxName, nameToFind, isSensitive) then
-            if r.TrackFX_GetOffline(track, fxIndex) then
-                off = off + 1
-            else
-                found = found + 1
-                if r.TrackFX_GetEnabled(track, fxIndex) then en = en + 1 else dis = dis + 1 end
-            end
-        end
-        
-        if checkContainers then
-            local retval, containerCount = r.TrackFX_GetNamedConfigParm(track, fxIndex, "container_count")
-            if retval and tonumber(containerCount) and tonumber(containerCount) > 0 then
-                local numFXInContainer = tonumber(containerCount)
-                for containerFXIndex = 0, numFXInContainer - 1 do
-                    local globalIdx = 0x2000000 + (containerFXIndex + 1) * (fxCount + 1) + fxIndex + 1
-                    local _, cName = r.TrackFX_GetFXName(track, globalIdx, "")
-                    
-                    if nameMatches(cName, nameToFind, isSensitive) then
-                        if r.TrackFX_GetOffline(track, globalIdx) then
-                            off = off + 1
-                        else
-                            found = found + 1
-                            if r.TrackFX_GetEnabled(track, globalIdx) then en = en + 1 else dis = dis + 1 end
-                        end
-                    end
-                end
+    local count = tonumber(c_fx_count) or 0
+    for i = 1, count do
+        local fx_addr = 0x2000000 + container_id + (i * diff)
+        local guid = r.TrackFX_GetFXGUID(track, fx_addr)
+        if guid then
+            callback(track, fx_addr)
+            
+            local ok_type, fx_type = r.TrackFX_GetNamedConfigParm(track, fx_addr, "fx_type")
+            if fx_type == "Container" then
+                ScanContainersRecursive(track, container_id + (i * diff), count, diff, nameToFind, isSensitive, callback)
             end
         end
     end
+end
+
+-------------------------------------------------------------------------
+-- SCANNING LOGIC
+-------------------------------------------------------------------------
+
+local function scanTrack(track, nameToFind, checkContainers, isSensitive)
+    local found, en, dis, off = 0, 0, 0, 0
+    local fxCount = r.TrackFX_GetCount(track)
+    
+    local function checkFX(tr, idx)
+        local _, name = r.TrackFX_GetFXName(tr, idx, "")
+        if nameMatches(name, nameToFind, isSensitive) then
+            if r.TrackFX_GetOffline(tr, idx) then
+                off = off + 1
+            else
+                found = found + 1
+                if r.TrackFX_GetEnabled(tr, idx) then en = en + 1 else dis = dis + 1 end
+            end
+        end
+    end
+
+    for i = 1, fxCount do
+        local addr = i - 1
+        checkFX(track, addr)
+        
+        if checkContainers then
+            local ok_type, fx_type = r.TrackFX_GetNamedConfigParm(track, addr, "fx_type")
+            if ok_type and fx_type == "Container" then
+                ScanContainersRecursive(track, i, fxCount, 1, nameToFind, isSensitive, checkFX)
+            end
+        end
+    end
+    
     return found, en, dis, off
 end
 
@@ -152,31 +164,31 @@ local function applyState(targetState)
     
     local trackCount = r.CountTracks(0)
     
-    local function applyToTrack(track)
+    local function processTrackFX(track)
         local fxCount = r.TrackFX_GetCount(track)
-        for i = 0, fxCount - 1 do
-            local _, name = r.TrackFX_GetFXName(track, i, "")
-            if nameMatches(name, fx_name_input, case_sensitive) and not r.TrackFX_GetOffline(track, i) then
-                r.TrackFX_SetEnabled(track, i, targetState)
+        
+        local function applyLogic(tr, idx)
+            local _, name = r.TrackFX_GetFXName(tr, idx, "")
+            if nameMatches(name, fx_name_input, case_sensitive) and not r.TrackFX_GetOffline(tr, idx) then
+                r.TrackFX_SetEnabled(tr, idx, targetState)
             end
+        end
+
+        for i = 1, fxCount do
+            local addr = i - 1
+            applyLogic(track, addr)
             
             if include_containers then
-                local retval, cCount = r.TrackFX_GetNamedConfigParm(track, i, "container_count")
-                if retval and tonumber(cCount) and tonumber(cCount) > 0 then
-                    for cIdx = 0, tonumber(cCount) - 1 do
-                        local gIdx = 0x2000000 + (cIdx + 1) * (fxCount + 1) + i + 1
-                        local _, cName = r.TrackFX_GetFXName(track, gIdx, "")
-                        if nameMatches(cName, fx_name_input, case_sensitive) and not r.TrackFX_GetOffline(track, gIdx) then
-                            r.TrackFX_SetEnabled(track, gIdx, targetState)
-                        end
-                    end
+                local ok_type, fx_type = r.TrackFX_GetNamedConfigParm(track, addr, "fx_type")
+                if ok_type and fx_type == "Container" then
+                    ScanContainersRecursive(track, i, fxCount, 1, fx_name_input, case_sensitive, applyLogic)
                 end
             end
         end
     end
     
-    applyToTrack(r.GetMasterTrack(0))
-    for i = 0, trackCount - 1 do applyToTrack(r.GetTrack(0, i)) end
+    processTrackFX(r.GetMasterTrack(0))
+    for i = 0, trackCount - 1 do processTrackFX(r.GetTrack(0, i)) end
     
     r.TrackList_AdjustWindows(false)
     r.UpdateArrange()
@@ -200,7 +212,6 @@ local function loop()
     end
 
     local window_flags = r.ImGui_WindowFlags_NoCollapse()
-    -- Increased width slightly to fit the longer text comfortably
     r.ImGui_SetNextWindowSize(ctx, 380, 260, r.ImGui_Cond_FirstUseEver()) 
     
     local visible, open = r.ImGui_Begin(ctx, 'Global FX Sync', true, window_flags)
@@ -213,7 +224,7 @@ local function loop()
         if changed then fx_name_input = new_text end
         
         -- Checkboxes
-        local chk_changed, new_chk = r.ImGui_Checkbox(ctx, "Include First-Level Containers", include_containers)
+        local chk_changed, new_chk = r.ImGui_Checkbox(ctx, "Include Containers", include_containers)
         if chk_changed then include_containers = new_chk end
         
         r.ImGui_SameLine(ctx)
@@ -233,7 +244,8 @@ local function loop()
         if state.is_mixed then
              local subtext = "(Select action to synchronize)"
              local sub_w = r.ImGui_CalcTextSize(ctx, subtext)
-             r.ImGui_SetCursorPosX(ctx, (win_w - sub_w) * 0.5)
+             r.ImGui_SetPosX = (win_w - sub_w) * 0.5
+             r.ImGui_SetCursorPosX(ctx, r.ImGui_GetPosX)
              r.ImGui_TextColored(ctx, 0xAAAAAAFF, subtext)
         end
         
