@@ -140,6 +140,9 @@
     <version name="1.2.0" author="Doc Shadrach" time="2026-01-03T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/786009b27674949db13e8751f79f1d435bab28d0/Utilities/DocShadrach_Global%20FX%20bypass%20synchronizer%20using%20ReaImGui.lua</source>
     </version>
+    <version name="1.2.1" author="Doc Shadrach" time="2026-01-03T09:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/ea99e8ec8bf8fe640b39ed8ef236caa12e64034b/Utilities/DocShadrach_Global%20FX%20bypass%20synchronizer%20using%20ReaImGui.lua</source>
+    </version>
     </reapack>
 
     <reapack name="DocShadrach_FX scene manager and switcher using ReaImGui.lua" type="script" desc="DocShadrach_FX scene manager and switcher using ReaImGui">
