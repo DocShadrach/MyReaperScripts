@@ -24,7 +24,7 @@ Key Features:
 - Scope Control: Includes a "Selected Tracks Only" option to limit the script's action to specific tracks (e.g., toggling vocal chains without affecting drums).
 - Drag-and-Drop Organization: Easily reorder scenes using a dedicated drag handle to maintain a logical workflow.
 - Real-Time Feedback: Buttons display live status (ON, OFF, or MIXED) based on the actual state of the plugins in the project.
-- Container Support: Scans root FX and first-level FX Containers to manage complex routing structures.
+- Containers support: Scans root FX and FX Containers to manage complex routing structures.
 - Project Persistence: Automatically saves all scene configurations and settings directly into the .rpp project file via ExtState.
 
 ### DocShadrach_Global FX bypass synchronizer using ReaImGui.lua
@@ -141,6 +141,7 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
 
 
 
