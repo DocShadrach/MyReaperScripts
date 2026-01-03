@@ -43,7 +43,7 @@ Key Features:
 
 ### DocShadrach_Global oversampling manager using ReaImGui.lua
 
-This script provides a central control panel to manage REAPER's native oversampling for specific plugins across the entire project. It is designed to switch high-quality processing on or off globally (e.g., for oversampling-hungry plugins like Analog Obsession or FabFilter), allowing for a high-fidelity mixing stage while maintaining a responsive workflow during production.
+This script provides a central control panel to manage REAPER's native oversampling for specific plugins across the entire project. It is designed to switch oversampling processing on or off globally, allowing for a high-fidelity mixing stage while maintaining a responsive workflow during production.
 
 Key Features:
 
@@ -141,6 +141,7 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
 
 
 
