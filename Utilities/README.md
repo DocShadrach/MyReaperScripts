@@ -41,6 +41,20 @@ Key Features:
 - CPU Optimization: Implements intelligent throttling to scan tracks efficiently without affecting playback performance.
 - Safety & Undo: Requires a minimum of 3 characters to activate controls (preventing accidental matches), ignores offline FX, and creates named Undo points.
 
+### DocShadrach_Global oversampling manager using ReaImGui.lua
+
+This script provides a central control panel to manage REAPER's native oversampling for specific plugins across the entire project. It is designed to switch high-quality processing on or off globally (e.g., for oversampling-hungry plugins like Analog Obsession or FabFilter), allowing for a high-fidelity mixing stage while maintaining a responsive workflow during production.
+
+Key Features:
+
+- Infinite Container Depth: Implements an advanced polynomial addressing engine (Recursive DIFF logic) to detect and process plugins regardless of how many FX Containers they are nested within.
+- Smart Status Filtering: Automatically ignores plugin instances that are currently Bypassed or Offline, focusing only on active processing to save CPU resources.
+- Per-Plugin Skip Logic: Includes individual checkboxes for each plugin pattern, allowing users to define a master list but selectively exclude specific plugins from the global oversampling toggle.
+- Precise State Restoration: Uses a GUID-based mapping system to store each plugin's unique oversampling value before activation, ensuring the "Restore" function returns every instance to its exact prior state.
+- Real-Time Instance Counting: Provides live feedback on the number of active plugins found for each filter pattern..
+- Global Quality Selector: Features a quick-access menu to switch between 2x, 4x, and 8x oversampling levels project-wide with a single click.
+- Project Persistence: Automatically saves all filter lists, enabled states, and configurations directly into the .rpp project file via ExtState for seamless multi-session use.
+
 ### DocShadrach_Project Startup Loader.lua
 
 This script acts as the execution engine for the Project Startup Manager. It is designed to be set as the SWS Project Startup Action. Upon loading a project, it intelligently locates and executes the list of actions defined by the Manager, handling both saved projects and new projects derived from templates.
@@ -127,6 +141,7 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
 
 
 
