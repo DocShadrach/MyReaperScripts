@@ -1,5 +1,5 @@
 -- @description Global FX Bypass Synchronizer
--- @version 1.2
+-- @version 1.2.1
 -- @author DocShadrach
 -- @about
 --   A ReaImGui tool to globally synchronize the bypass state of specific FX plugins by name.
@@ -244,8 +244,7 @@ local function loop()
         if state.is_mixed then
              local subtext = "(Select action to synchronize)"
              local sub_w = r.ImGui_CalcTextSize(ctx, subtext)
-             r.ImGui_SetPosX = (win_w - sub_w) * 0.5
-             r.ImGui_SetCursorPosX(ctx, r.ImGui_GetPosX)
+             r.ImGui_SetCursorPosX(ctx, (win_w - sub_w) * 0.5) -- CORREGIDO
              r.ImGui_TextColored(ctx, 0xAAAAAAFF, subtext)
         end
         
