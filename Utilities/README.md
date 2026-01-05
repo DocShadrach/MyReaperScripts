@@ -13,6 +13,20 @@ Key Features:
 - Provides a confirmation dialog to apply the detected BPM to the project or keep the current tempo.
 - Preserves the original project view, cursor position, and item selection after analysis.
 
+### DocShadrach_FX Chain Smart Manager.lua
+
+This script provides a professional graphical interface to browse, manage, and insert FX Chains intelligently based on track names and custom tagging. It automates the search process by scanning a dedicated folder hierarchy and allows for precise drag-and-drop insertion between existing effects, significantly accelerating the mixing workflow.
+
+Key Features:
+
+- Smart Name-Based Filtering: Automatically scans a 2-level hierarchy within the FXChains/Importer folder to show only chains that match the selected track's name (e.g., selecting a "KICK" track shows only Kick-related chains).
+- Dynamic Tag Categorization: Automatically groups FX chains into categories using bracketed tags in the filename (e.g., [EQ], [COMP], [SAT]).
+- Folder Inheritance ([GEN] Tags): Supports "General" chains that are inherited by sub-folders. A chain tagged with [GEN] in a parent folder (e.g., DRUMS/) will automatically appear in the list for all child tracks (e.g., DRUMS/KICK, DRUMS/SNARE).
+- Global RECURRENT FX: Dedicated support for root-level chains. Any file placed directly in the Importer/ root folder is treated as a recurrent global item available to every track in the project.
+- Precise Drag-and-Drop Insertion: Features interactive "drop zones" between existing plugins. Unlike standard REAPER behavior, this script allows you to drop a chain exactly where you want it.
+- Multi-Plugin Support: Correctly handles .RfxChain files containing multiple plugins. It calculates the size of the added block and moves the entire chain to the targeted position, preserving the internal order of the FX.
+- Quick Management: Features per-plugin delete buttons (X) for the current track and double-click shortcuts to quickly append chains to the end of the list.
+
 ### DocShadrach_FX scene manager and switcher using ReaImGui.lua
 
 This script provides a professional interface to define, manage, and switch between different sets of FX (Scenes) across the project. It allows users to create custom groups of plugins based on name patterns and toggle them instantly, functioning as a powerful A/B testing tool for mixing chains or distinct production stages.
@@ -141,6 +155,7 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
 
 
 
