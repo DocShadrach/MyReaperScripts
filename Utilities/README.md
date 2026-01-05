@@ -15,7 +15,7 @@ Key Features:
 
 ### DocShadrach_FX Chain Smart Manager.lua
 
-This script provides a professional graphical interface to browse, manage, and insert FX Chains intelligently based on track names and custom tagging. It automates the search process by scanning a dedicated folder hierarchy and allows for precise drag-and-drop insertion between existing effects, significantly accelerating the mixing workflow.
+This script provides a graphical interface to browse, manage, and insert FX Chains intelligently based on track names and custom tagging. It automates the search process by scanning a dedicated folder hierarchy and allows for precise drag-and-drop insertion between existing effects, significantly accelerating the mixing workflow.
 
 Key Features:
 
@@ -155,6 +155,7 @@ Key Features:
 - Automatic cleanup of empty notes when the script closes.
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
+
 
 
 
