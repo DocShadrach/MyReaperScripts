@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="DocShadrach Scripts" commit="162bb30e311e36f1c84a72e0cb81487d30378035">
+<index version="1" name="DocShadrach Scripts" commit="a2741f18cadb870b6581c697c1b743fb9c143b45">
 
  <category name="Creators">
     <reapack name="DocShadrach_Selecting presets in loop [Creator] (F&amp;B).lua" type="script" desc="DocShadrach_Selecting presets in loop [Creator] (F&amp;B)">
@@ -184,6 +184,12 @@
     <reapack name="DocShadrach_FX Chain Smart Manager.lua" type="script" desc="DocShadrach_FX Chain Smart Manager">
     <version name="1.0.0" author="Doc Shadrach" time="2026-01-05T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/162bb30e311e36f1c84a72e0cb81487d30378035/Utilities/DocShadrach_FX%20Chain%20Smart%20Manager.lua</source>
+    </version>
+    </reapack>
+
+    <reapack name="DocShadrach_Vox Leveler.lua" type="script" desc="DocShadrach_Vox Leveler">
+    <version name="1.0.0" author="Doc Shadrach" time="2026-01-06T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/a2741f18cadb870b6581c697c1b743fb9c143b45/Utilities/DocShadrach_Vox%20Leveler.lua</source>
     </version>
     </reapack>
  </category>
