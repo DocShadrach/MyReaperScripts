@@ -156,6 +156,20 @@ Key Features:
 - Real-time saving when pressing Enter in the text field.
 - Works with any project and persists notes across REAPER sessions.
 
+### DocShadrach_Vox Leveler.lua
+
+This script functions as a professional offline Vocal Rider, analyzing source audio to write precise Take Volume automation without modifying the original waveform. It features immediate visual feedback, updating the waveform display instantly to reflect dynamic changes, and includes advanced processing tools like a noise gate, lookahead detection, and wet/dry intensity control.
+
+Key Features:
+
+- Non-Destructive Processing: Always analyzes the original source file, allowing for infinite re-adjustments and experimentation without degrading audio quality.
+- Visual Feedback Engine: Forces immediate waveform redraws, giving instant visual confirmation of how the dynamics have been controlled.
+- Smart Noise Gate: Prevents the "riding" of background noise or breaths by ignoring audio below a user-defined threshold.
+- Advanced Dynamic Control: Features configurable Target RMS, Lookahead time for transient preservation, and Max Boost/Cut clamping limits.
+- Output Stage: Includes an "Amount" (Wet/Dry) intensity slider for natural-sounding results and an Output Make-Up Gain control.
+- Bypass & Compare: Dedicated "Before/After" toggle allows for instant A/B comparison between the processed signal and the raw audio.
+- Clean View Mode: Robust "Hide Envelope" option uses direct Chunk manipulation to hide the automation line while keeping the processing active.
+
 
 
 
