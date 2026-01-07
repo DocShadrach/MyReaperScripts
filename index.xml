@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="DocShadrach Scripts" commit="45b54e831e735401ac6b73d35e4b619e6dd327e1">
+<index version="1" name="DocShadrach Scripts" commit="cbd977376c8eb56af852f530904dd2429114409b">
 
  <category name="Creators">
     <reapack name="DocShadrach_Selecting presets in loop [Creator] (F&amp;B).lua" type="script" desc="DocShadrach_Selecting presets in loop [Creator] (F&amp;B)">
@@ -191,12 +191,6 @@
     <version name="1.0.0" author="Doc Shadrach" time="2026-01-06T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/a2741f18cadb870b6581c697c1b743fb9c143b45/Utilities/DocShadrach_Vox%20Leveler.lua</source>
     </version>
-
-    <reapack name="DocShadrach_Analog Ecosystem oversampling manager.lua" type="script" desc="DocShadrach_Analog Ecosystem oversampling manager">
-    <version name="1.0.0" author="Doc Shadrach" time="2026-01-07T07:00:00Z">
-    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/45b54e831e735401ac6b73d35e4b619e6dd327e1/Utilities/DocShadrach_Analog%20Ecosystem%20oversampling%20manager.lua</source>
-    </version>
-    </reapack>
  </category>
 
 </index>
