@@ -191,6 +191,12 @@
     <version name="1.0.0" author="Doc Shadrach" time="2026-01-06T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/a2741f18cadb870b6581c697c1b743fb9c143b45/Utilities/DocShadrach_Vox%20Leveler.lua</source>
     </version>
+
+
+    <reapack name="DocShadrach_Analog Ecosystem oversampling manager.lua" type="script" desc="DocShadrach_Analog Ecosystem oversampling manager">
+    <version name="1.0.0" author="Doc Shadrach" time="2026-01-07T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/45b54e831e735401ac6b73d35e4b619e6dd327e1/Utilities/DocShadrach_Analog%20Ecosystem%20oversampling%20manager.lua</source>
+    </version>
     </reapack>
  </category>
 
