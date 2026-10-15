@@ -1,6 +1,13 @@
--- @description Track-by-track file importer with folder hierarchy, track colors, import button, folder level filter, name-based track hide, color-based track filter, and existing files confirmation
--- @version 1.20
+-- @description Track-by-track file importer with folder hierarchy, track colors, import button, folder level filter, name-based track hide, color-based track filter, existing files confirmation, double-click track renaming, per-file assignment dots and folder drag & drop
+-- @version 1.30
 -- @author DocShadrach
+-- @changelog
+--   + 1.30: drag a folder from Explorer onto the Select Folder row to open it
+--   + 1.30: "Reload Folder" button to re-scan the current folder
+--   + 1.30: double-click a track name to rename it (Enter confirms, Esc cancels)
+--   + 1.30: one dot per assigned file is drawn after the track name
+--   + 1.30: track isolation moved from double-click to Ctrl+double-click
+--   + 1.20: base version
 
 local ctx = reaper.ImGui_CreateContext('Quick File Importer')
 local FONT = reaper.ImGui_CreateFont('sans-serif', 16)
@@ -169,6 +176,49 @@ local function refresh_file_tree()
     file_tree = {}
     file_list_flat = {}
   end
+end
+
+-------------------------------------------------------------
+-- FOLDER DROPPING
+-------------------------------------------------------------
+
+local function is_directory(path)
+  if not path or path == "" then return false end
+
+  -- Native check first; only an empty folder needs the JS_File_Stat fallback
+  if reaper.EnumerateSubdirectories(path, 0) ~= nil then return true end
+  if reaper.EnumerateFiles(path, 0) ~= nil then return true end
+
+  if reaper.APIExists("JS_File_Stat") then
+    local retval, _, _, _, _, _, _, inode, mode = reaper.JS_File_Stat(path)
+    if retval == 0 then
+      if tonumber(mode) and (math.floor(mode) & 0xF000) == 0x4000 then return true end
+      if not inode or inode == 0 then return true end
+    end
+  end
+
+  return false
+end
+
+-- Must be called inside a BeginDragDropTarget/EndDragDropTarget pair
+local function handle_folder_drop()
+  if not reaper.APIExists("ImGui_AcceptDragDropPayloadFiles") then return false end
+
+  local ok, count = reaper.ImGui_AcceptDragDropPayloadFiles(ctx)
+  if not ok then return false end
+
+  -- Only the first folder in the payload is used
+  local n = tonumber(count) or 1
+  for i = 0, n - 1 do
+    local got, path = reaper.ImGui_GetDragDropPayloadFile(ctx, i)
+    if got and path and path ~= "" and is_directory(path) then
+      folder_path = path
+      refresh_file_tree()
+      return true
+    end
+  end
+
+  return false
 end
 
 local function remove_fades(item)
@@ -776,9 +826,10 @@ local function show_tree(node)
         save_undo_state()
         
         local shift_pressed = reaper.ImGui_IsKeyDown(ctx, reaper.ImGui_Key_LeftShift()) or reaper.ImGui_IsKeyDown(ctx, reaper.ImGui_Key_RightShift())
+        local ctrl_pressed = reaper.ImGui_IsKeyDown(ctx, reaper.ImGui_Key_LeftCtrl()) or reaper.ImGui_IsKeyDown(ctx, reaper.ImGui_Key_RightCtrl())
         
         if shift_pressed and last_selected_file_index and current_index then
-          -- Shift selection: select range between last selected and current
+          -- Shift: select range between last selected and current
           local start_index = math.min(last_selected_file_index, current_index)
           local end_index = math.max(last_selected_file_index, current_index)
           
@@ -789,8 +840,8 @@ local function show_tree(node)
               table.insert(selected_files, file_list_flat[i].path)
             end
           end
-        else
-          -- Normal click: toggle selection of single file
+        elseif ctrl_pressed then
+          -- Ctrl: toggle this file
           local found = false
           for j, f in ipairs(selected_files) do
             if f == item.path then
@@ -803,7 +854,10 @@ local function show_tree(node)
             table.insert(selected_files, item.path)
           end
           
-          -- Update last selected index for future shift selections
+          last_selected_file_index = current_index
+        else
+          -- Plain click: this file only
+          selected_files = { item.path }
           last_selected_file_index = current_index
         end
       end
@@ -823,6 +877,86 @@ local function show_tree(node)
       
       reaper.ImGui_PopID(ctx)
     end
+  end
+end
+
+-------------------------------------------------------------
+-- TRACK RENAMING
+-------------------------------------------------------------
+
+local renaming_track = nil
+local rename_buffer = ""
+local rename_focus_next_frame = false
+local rename_scroll_y = nil
+
+local function start_rename_track(track_index)
+  renaming_track = track_index
+  rename_buffer = tracks[track_index].name or ""
+  rename_focus_next_frame = true
+  -- Remember where the track list was scrolled to
+  rename_scroll_y = reaper.ImGui_GetScrollY(ctx)
+end
+
+local function cancel_rename_track()
+  renaming_track = nil
+  rename_focus_next_frame = false
+  rename_scroll_y = nil
+end
+
+local function commit_rename_track()
+  local track_index = renaming_track
+  if not track_index then return end
+
+  local tr = tracks[track_index]
+  cancel_rename_track()
+  if not tr or not reaper.ValidatePtr(tr.ptr, "MediaTrack*") then return end
+
+  local new_name = rename_buffer
+  if new_name == tr.name then return end
+
+  local _, current_name = reaper.GetSetMediaTrackInfo_String(tr.ptr, "P_NAME", "", false)
+  if new_name == current_name then return end
+
+  reaper.Undo_BeginBlock()
+  reaper.GetSetMediaTrackInfo_String(tr.ptr, "P_NAME", new_name, true)
+  reaper.TrackList_AdjustWindows(false)
+  reaper.UpdateArrange()
+  reaper.Undo_EndBlock("Rename track", -1)
+
+  -- Keep the isolation feature's saved name in sync too
+  tr.name = new_name
+  if next(original_track_names) ~= nil then
+    original_track_names[tr.ptr] = new_name
+  end
+end
+
+local function draw_assignment_dots(tr, color)
+  local file_list = assignments[tr.ptr]
+  local count = file_list and #file_list or 0
+  if count <= 0 then return end
+
+  local draw_list = reaper.ImGui_GetWindowDrawList(ctx)
+  if not draw_list then return end
+
+  -- Measure the real track name: tr.name gets a "-" suffix while isolating
+  local _, real_name = reaper.GetTrackName(tr.ptr)
+  local text_w = reaper.ImGui_CalcTextSize(ctx, real_name or tr.name)
+  local x, y = reaper.ImGui_GetItemRectMin(ctx)
+  local _, y2 = reaper.ImGui_GetItemRectMax(ctx)
+  local cy = (y + y2) * 0.5
+
+  local dot_color
+  if color and color ~= 0 then
+    dot_color = color + 0xFF000000
+  else
+    dot_color = reaper.ImGui_ColorConvertDouble4ToU32(0.65, 0.65, 0.65, 1.0)
+  end
+
+  local radius, gap = 3.0, 8.0
+  local cx = x + text_w + 6.0 + radius
+  for _ = 1, count do
+    reaper.ImGui_DrawList_AddCircleFilled(draw_list, cx, cy, radius, dot_color)
+    cx = cx + gap
   end
 end
 
@@ -860,17 +994,66 @@ local function show_tracks_with_hierarchy()
         reaper.ImGui_Indent(ctx, indent_amount)
         local color = reaper.GetTrackColor(tr.ptr)
         local r, g, b = nativeColorToRGB(color)
+        -- Unique ID for each track to avoid ImGui ID conflicts
         reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_Text(), reaper.ImGui_ColorConvertDouble4ToU32(r, g, b, 1.0))
-        -- Use unique ID for each track to avoid ImGui ID conflicts
         reaper.ImGui_PushID(ctx, tostring(tr.ptr))
-        
-        -- Show the track selectable
-        reaper.ImGui_PushStyleColor(ctx, reaper.ImGui_Col_Text(), reaper.ImGui_ColorConvertDouble4ToU32(r, g, b, 1.0))
-        if reaper.ImGui_Selectable(ctx, tr.name, selected_track == i) then
-          selected_track = i
+
+        if renaming_track == i then
+          -- The InputText replaces the Selectable, so the row changes width and
+          -- height; pinning the scroll keeps the list from jumping while editing
+          if rename_scroll_y then
+            reaper.ImGui_SetScrollY(ctx, rename_scroll_y)
+          end
+
+          if rename_focus_next_frame then
+            reaper.ImGui_SetKeyboardFocusHere(ctx)
+            rename_focus_next_frame = false
+          end
+
+          local _, new_buffer = reaper.ImGui_InputText(ctx, "##rename", rename_buffer, 256)
+          rename_buffer = new_buffer
+
+          if rename_scroll_y then
+            reaper.ImGui_SetScrollY(ctx, rename_scroll_y)
+          end
+
+          if reaper.ImGui_IsKeyPressed(ctx, reaper.ImGui_Key_Enter()) then
+            commit_rename_track()
+          elseif reaper.ImGui_IsKeyPressed(ctx, reaper.ImGui_Key_Escape()) then
+            cancel_rename_track()
+          elseif reaper.ImGui_IsItemHovered(ctx)
+             and reaper.ImGui_IsMouseClicked(ctx, 1) then
+            cancel_rename_track()
+          end
+          reaper.ImGui_PopID(ctx)
+          reaper.ImGui_PopStyleColor(ctx)
+          reaper.ImGui_Unindent(ctx, indent_amount)
+          goto continue_track
         end
+
+        -- Click selects, double-click renames, Ctrl+double-click isolates
+        local clicked = reaper.ImGui_Selectable(ctx, tr.name, selected_track == i,
+          reaper.ImGui_SelectableFlags_AllowDoubleClick())
         reaper.ImGui_PopStyleColor(ctx)
-        
+
+        if clicked then
+          if reaper.ImGui_IsMouseDoubleClicked(ctx, 0) then
+            if reaper.ImGui_IsKeyDown(ctx, reaper.ImGui_Key_LeftCtrl())
+               or reaper.ImGui_IsKeyDown(ctx, reaper.ImGui_Key_RightCtrl()) then
+              toggle_track_isolation(i)
+            else
+              if renaming_track then commit_rename_track() end
+              start_rename_track(i)
+            end
+          else
+            -- Clicking any track confirms the rename in progress
+            if renaming_track then commit_rename_track() end
+            selected_track = i
+          end
+        end
+
+        draw_assignment_dots(tr, color)
+
         -- Drag & Drop target for tracks
         if reaper.ImGui_BeginDragDropTarget(ctx) then
           local payload = reaper.ImGui_AcceptDragDropPayload(ctx, "FILE_DRAG")
@@ -899,17 +1082,19 @@ local function show_tracks_with_hierarchy()
           end
           reaper.ImGui_EndDragDropTarget(ctx)
         end
-        
-        -- Handle double-click for track isolation
-        if reaper.ImGui_IsItemHovered(ctx) and reaper.ImGui_IsMouseDoubleClicked(ctx, 0) then
-          toggle_track_isolation(i)
-        end
-        
+
         reaper.ImGui_PopID(ctx)
-        reaper.ImGui_PopStyleColor(ctx)
         reaper.ImGui_Unindent(ctx, indent_amount)
       end
+      ::continue_track::
     end
+  end
+
+  -- Clicking the empty area below the tracks confirms the rename in progress
+  if renaming_track and reaper.ImGui_IsWindowHovered(ctx)
+     and reaper.ImGui_IsMouseClicked(ctx, 0)
+     and not reaper.ImGui_IsAnyItemHovered(ctx) then
+    commit_rename_track()
   end
 end
 
@@ -1104,16 +1289,41 @@ local function main()
     return
   end
 
-  -- Folder selection at the top
-  if reaper.ImGui_Button(ctx, "Select Folder") then
-    local retval, path = reaper.JS_Dialog_BrowseForFolder("Select a folder", "")
-    if retval and path ~= "" then
-      folder_path = path
-      refresh_file_tree()
+  -- Folder selection at the top (the row is also a drop target)
+  reaper.ImGui_BeginGroup(ctx)
+
+    if reaper.ImGui_Button(ctx, "Select Folder") then
+      local retval, path = reaper.JS_Dialog_BrowseForFolder("Select a folder", "")
+      if retval and path ~= "" then
+        folder_path = path
+        refresh_file_tree()
+      end
     end
+
+    reaper.ImGui_SameLine(ctx)
+    reaper.ImGui_Text(ctx, folder_path ~= "" and folder_path or "(no folder selected)")
+
+    -- Grows the drop area downwards; must stay narrow or it pushes the next
+    -- SameLine widget off the window
+    reaper.ImGui_Dummy(ctx, 1, 8)
+
+  reaper.ImGui_EndGroup(ctx)
+
+  if reaper.ImGui_BeginDragDropTarget(ctx) then
+    if reaper.ImGui_AcceptDragDropPayloadFiles(ctx) then
+      handle_folder_drop()
+    end
+    reaper.ImGui_EndDragDropTarget(ctx)
   end
+
+  if reaper.ImGui_IsItemHovered(ctx) then
+    reaper.ImGui_SetTooltip(ctx, "Click to browse, or drop a folder here from Explorer")
+  end
+
   reaper.ImGui_SameLine(ctx)
-  reaper.ImGui_Text(ctx, folder_path)
+  if reaper.ImGui_Button(ctx, "Reload Folder") then
+    refresh_file_tree()
+  end
   reaper.ImGui_Separator(ctx)
 
   -- Hide names input
@@ -1166,8 +1376,9 @@ local function main()
     local help_message = [[
 QUICK FILE IMPORTER - ADVANCED FEATURES
 
->> FILE SELECTION (SHIFT MULTI-SELECT)
-• Click any file to select/deselect it
+>> FILE SELECTION
+• Click a file to select it on its own
+• Ctrl + click to add or remove single files
 • Hold Shift + click another file to select range between them
 • Perfect for selecting multiple consecutive files quickly
 • Works across folder boundaries in the file tree
@@ -1178,9 +1389,28 @@ QUICK FILE IMPORTER - ADVANCED FEATURES
 • Files are automatically assigned to the target track
 • Works with Undo (Ctrl+Z) for easy mistake correction
 
->> TRACK ISOLATION (DOUBLE-CLICK MAGIC)
-• Double-click any track to isolate it and its children
-• Double-click again to go back through isolation levels
+>> FOLDER: DRAG & DROP
+• Drag a folder from Windows Explorer onto the "Select Folder" row
+• The folder opens immediately - no need to browse for it
+• Dropping a file instead of a folder is ignored
+• "Select Folder" opens the browser dialog
+• "Reload Folder" re-scans the current folder
+
+>> RENAMING TRACKS (DOUBLE-CLICK)
+• Double-click a track name to edit it in place
+• Enter = confirm, Esc or right-click = cancel
+• Clicking another track also confirms the rename
+• The rename is a proper REAPER undo step (Ctrl+Z in REAPER restores it)
+
+>> ASSIGNMENT DOTS
+• Each file assigned to a track shows as one dot after the track name
+• Two files assigned = two dots, and so on
+• Dots use the track's colour (light grey for tracks with no colour)
+• The dots clear when "Import Assignments" is pressed
+
+>> TRACK ISOLATION (CTRL + DOUBLE-CLICK)
+• Ctrl+double-click any track to isolate it and its children
+• Ctrl+double-click again to go back through isolation levels
 • Perfect for focusing on drum kits, vocal groups, etc.
 
 >> COLOR FILTERING
