@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="DocShadrach Scripts" commit="b20eb0926e911f939f2e4c916b174e016aa4e66d">
+<index version="1" name="DocShadrach Scripts" commit="437fefa58a72659fa63287ab97ff26ff04ccf7e2">
 
  <category name="Creators">
     <reapack name="DocShadrach_Selecting presets in loop [Creator] (F&amp;B).lua" type="script" desc="DocShadrach_Selecting presets in loop [Creator] (F&amp;B)">
@@ -106,6 +106,9 @@
     </version>
     <version name="1.2.0" author="Doc Shadrach" time="2025-11-04T07:00:00Z">
     <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/b157c0fbe207123d4999e38bd7d7186332ffe568/Utilities/DocShadrach_Quick%20file%20importer%20using%20ReaImGui.lua</source>
+    </version>
+    <version name="1.3.0" author="Doc Shadrach" time="2026-10-15T07:00:00Z">
+    <source main="main">https://raw.githubusercontent.com/DocShadrach/MyReaperScripts/437fefa58a72659fa63287ab97ff26ff04ccf7e2/Utilities/DocShadrach_Quick%20file%20importer%20using%20ReaImGui.lua</source>
     </version>
     </reapack>
 
